@@ -1,75 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Login</title>
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #6a0dad, #3c0f5f);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  .login-box {
-    background: rgba(30, 30, 50, 0.95);
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    width: 340px;
-  }
-  p {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #ccc;
-    word-break: break-all;
-    white-space: pre-wrap;
-  }
-  .small { font-size:12px; color:#ddd; margin-top:8px; }
-  .btn { margin-top:12px; padding:10px 16px; border-radius:8px; border:none; background:#9d4edd; color:white; font-weight:700; cursor:pointer; }
-  .btn:hover { background:#ffcc00; color:#000; }
+body { margin:0; font-family:Arial; background: linear-gradient(135deg,#6a0dad,#3c0f5f); color:#fff; height:100vh; display:flex; align-items:center; justify-content:center; }
+.box { background:rgba(0,0,0,0.9); padding:28px; border-radius:12px; width:360px; text-align:center; }
+.small { font-size:13px; margin-top:10px; color:#ddd; white-space:pre-wrap; }
+.btn { margin-top:14px; padding:10px 14px; border-radius:8px; border:none; background:#9d4edd; color:white; font-weight:700; cursor:pointer;}
+.btn:hover { background:#ffcc00; color:#000; }
 </style>
 </head>
 <body>
-  <div class="login-box">
+  <div class="box">
     <h2>Welcome to ReallyUnb0ck3d</h2>
-    <p id="loginInfo">Generating your device login...</p>
-    <div class="small">This creates a permanent device login stored in your browser. If you clear site data, you'll need to regenerate.</div>
-    <button id="showCreds" class="btn" style="display:none;">Show my credentials</button>
+    <div id="msg" class="small">Checking your device...</div>
+    <button id="show" class="btn" style="display:none">Show credentials</button>
   </div>
 
 <script>
-const localKey = 'deviceLogin';
+(function(){
+  const localKey = 'deviceLogin';
+  const publicKey = 'publicDevices';
+  const revokeKey = 'revokedDevices';
+  const msg = document.getElementById('msg');
+  const showBtn = document.getElementById('show');
 
-// If device already has login, go straight to site
-const existingLogin = localStorage.getItem(localKey);
-if (existingLogin) {
-    // ensure quick redirect (instant)
+  // check if device exists
+  let loginData = localStorage.getItem(localKey);
+  if (loginData) {
+    loginData = JSON.parse(loginData);
+
+    // check if revoked
+    const revokedRaw = localStorage.getItem(revokeKey) || '[]';
+    const revoked = JSON.parse(revokedRaw);
+    if (revoked.includes(loginData.deviceId)) {
+      msg.textContent = 'Your device is currently revoked. You cannot log in until it is reinstated.';
+      return; // stop redirecting / generating new device
+    }
+
+    // device is valid -> redirect
     window.location.replace('site.html');
-} else {
-    // Generate permanent device login
-    const deviceId = 'dev-' + Math.random().toString(36).slice(2,10);
-    const username = 'u_' + Math.random().toString(36).slice(2,8);
-    const password = Math.random().toString(36).slice(2,10);
+    return;
+  }
 
-    const loginData = { deviceId, username, password };
-    localStorage.setItem(localKey, JSON.stringify(loginData));
+  // generate new device
+  const deviceId = 'dev-' + Math.random().toString(36).slice(2,10);
+  const username = 'u_' + Math.random().toString(36).slice(2,8);
+  const password = Math.random().toString(36).slice(2,10);
+  const createdAt = new Date().toISOString();
 
-    const info = document.getElementById('loginInfo');
-    info.textContent = `Your login has been created!\nUsername: ${username}\nPassword: ${password}\nDevice ID: ${deviceId}`;
+  loginData = { deviceId, username, password, createdAt };
+  localStorage.setItem(localKey, JSON.stringify(loginData));
 
-    document.getElementById('showCreds').style.display = 'inline-block';
-    document.getElementById('showCreds').addEventListener('click', ()=> alert(info.textContent));
+  // append to publicDevices
+  try {
+    const raw = localStorage.getItem(publicKey);
+    const list = raw ? JSON.parse(raw) : [];
+    list.push(loginData);
+    localStorage.setItem(publicKey, JSON.stringify(list));
+  } catch(e) { console.error(e); }
 
-    // Redirect to site after 900ms
-    setTimeout(() => {
-        window.location.replace('site.html');
-    }, 900);
-}
+  msg.textContent = `Your login has been created!\nUsername: ${username}\nPassword: ${password}\nDevice ID: ${deviceId}`;
+
+  showBtn.style.display = 'inline-block';
+  showBtn.onclick = () => alert(msg.textContent);
+
+  setTimeout(()=> window.location.replace('site.html'), 900);
+})();
 </script>
 </body>
 </html>
