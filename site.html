@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ReallyUnb0ck3d</title>
 <style>
 body { margin:0; font-family: Arial, sans-serif; background:#1e1e2f; color:white; }
@@ -10,16 +10,12 @@ header { background:#2e2e4f; padding:30px; text-align:center; position:relative;
 header h1, header h2, header h3 { font-family: "Comic Sans MS", cursive, sans-serif; margin:5px 0; }
 header h1 { font-size:3rem; }
 header h2 { font-size:1.8rem; display:inline-block; white-space: pre; }
-header h3 { font-size:1.2rem; margin-top:10px; }
 .cursor { display:inline-block; width:.15em; background:orange; animation:blink 0.7s step-start infinite; margin-left:2px; }
-@keyframes blink { 0%,50%,100%{ opacity:1; } 25%,75%{ opacity:0; } }
+@keyframes blink { 0%,50%,100%{ opacity:1 } 25%,75%{ opacity:0 } }
 
 nav { display:flex; justify-content:center; gap:20px; margin-top:20px; }
 nav button { background:#4b2e83; border:none; padding:10px 15px; color:white; font-weight:bold; cursor:pointer; border-radius:5px; transition:0.3s; }
 nav button:hover { background:#ffcc00; color:#000; }
-
-.tab-content { display:none; padding:20px; }
-.tab-content.active { display:block; }
 
 .game-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:20px; padding:20px; }
 .game-card { background:#2e2e4f; border-radius:10px; overflow:hidden; cursor:pointer; text-align:center; transition:0.3s; box-shadow:0 2px 8px rgba(0,0,0,0.4); }
@@ -28,39 +24,80 @@ nav button:hover { background:#ffcc00; color:#000; }
 .game-card:hover { transform: scale(1.03); }
 
 .credits { background:#2e2e4f; padding:20px; border-radius:10px; max-width:900px; margin:20px auto; text-align:center; }
+
 #deviceIdDisplay { position: fixed; top: 10px; left: 10px; font-size: 12px; color: #ffcc00; background: #2e2e4f; padding: 6px 10px; border-radius: 6px; z-index:9999; }
 .logout-btn { position: fixed; top: 10px; right: 10px; z-index:9999; padding:8px 12px; border-radius:8px; border:none; background:#9d4edd; color:white; cursor:pointer; font-weight:700; }
-@media (max-width:600px) {
-  header h1 { font-size:2rem; }
-  .game-card img { height:120px; }
+.admin-btn { position: fixed; top: 48px; right: 10px; z-index:9999; padding:8px 12px; border-radius:8px; border:none; background:#333; color:white; cursor:pointer; font-weight:700; display:block; }
+
+.admin-panel {
+  position: fixed;
+  right: 10px;
+  top: 100px;
+  width: 380px;
+  max-height: 70vh;
+  overflow:auto;
+  background: rgba(0,0,0,0.9);
+  padding: 12px;
+  border-radius: 10px;
+  display:none;
+  z-index:10000;
 }
+.admin-panel h3 { margin:6px 0 10px 0; font-size:16px; }
+.input, .small { width:100%; padding:8px; margin:6px 0; border-radius:6px; border:none; background:#1a1a2e; color:#fff; }
+.row { display:flex; gap:8px; }
+.row button { flex:1; padding:8px; border-radius:6px; border:none; cursor:pointer; }
+.btn-danger { background:#ff5555; color:#fff; }
+.btn-ok { background:#4caf50; color:#fff; }
+.table { width:100%; font-family:monospace; font-size:13px; color:#ddd; margin-top:8px; }
+.dev-item { background:#111; padding:8px; margin:6px 0; border-radius:6px; }
+.bad { color:#ff8b8b } .good { color:#b7ffb7 }
+.note { font-size:12px; color:#ccc; margin-top:6px; }
 </style>
 </head>
 <body>
 <script>
-// Login check (must be first)
-const loginData = localStorage.getItem('deviceLogin');
-if (!loginData) {
+// Enforce login at top: ensure deviceLogin exists and not revoked
+const loginRaw = localStorage.getItem('deviceLogin');
+if (!loginRaw) {
+  window.location.replace('index.html');
+} else {
+  try {
+    const login = JSON.parse(loginRaw);
+    // check revoked list
+    const revokedRaw = localStorage.getItem('revokedDevices') || '[]';
+    const revoked = JSON.parse(revokedRaw);
+    if (Array.isArray(revoked) && revoked.includes(login.deviceId)) {
+      // this device is revoked locally
+      alert('This device has been revoked. You will be logged out.');
+      localStorage.removeItem('deviceLogin');
+      window.location.replace('index.html');
+    }
+  } catch(e) {
+    console.error('login parse error', e);
+    localStorage.removeItem('deviceLogin');
     window.location.replace('index.html');
+  }
 }
 </script>
 
 <button class="logout-btn" onclick="logout()">Logout</button>
+<button class="admin-btn" id="adminBtn" onclick="openAdmin()">Admin Login</button>
 <div id="deviceIdDisplay">Device: <span id="deviceIdSpan"></span></div>
 
 <header>
-    <h1>ReallyUnb0ck3d</h1>
-    <h2 id="animatedHeader"></h2>
-    <h3>Site url changed and one of the headers broke</h3>
-    <nav>
-        <button onclick="openTab('games')">Games</button>
-        <button onclick="openTab('credits')">Credits</button>
-    </nav>
+  <h1>ReallyUnb0ck3d</h1>
+  <h2 id="animatedHeader"></h2>
+  <h3>Site url changed and one of the headers broke</h3>
+  <nav>
+    <button onclick="openTab('games')">Games</button>
+    <button onclick="openTab('credits')">Credits</button>
+  </nav>
 </header>
 
 <div id="games" class="tab-content active">
   <div class="game-grid">
-<!-- FULL GAME CARDS: all cards included -->
+    <!-- (truncated here in this block for brevity) -->
+    <!-- you should paste all your game-card divs here exactly as before -->
 <div class="game-card" onclick="location.href='game.html?file=games/COMMENTS.html'">
 <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/596-uu.png" alt="COMMENTS"><h3>SUGGESTIONS!!</h3></div>
 <div class="game-card" onclick="location.href='game.html?file=games/1v1.LoL.html'">
@@ -157,6 +194,7 @@ if (!loginData) {
   </div>
 </div>
 
+
 <div id="credits" class="tab-content">
   <div class="credits">
     <h2>Credits</h2>
@@ -165,44 +203,215 @@ if (!loginData) {
   </div>
 </div>
 
+<!-- Admin Panel -->
+<div id="adminPanel" class="admin-panel">
+  <h3>Admin — Manage Device Access</h3>
+
+  <div id="adminLoginArea">
+    <input id="adminUser" class="input" placeholder="Admin username">
+    <input id="adminPass" class="input" placeholder="Admin password" type="password">
+    <div class="row">
+      <button id="adminLoginBtn" class="btn-ok">Login as Admin</button>
+      <button id="adminCancelBtn" class="btn-danger">Cancel</button>
+    </div>
+    <div class="note">Admin login is <strong>lukas / lukas</strong>. This admin panel modifies localStorage on this browser only.</div>
+  </div>
+
+  <div id="adminUI" style="display:none;">
+    <div class="note">Known devices (from this browser's <code>publicDevices</code>)</div>
+    <div id="devicesList"></div>
+
+    <div style="margin-top:8px;">
+      <input id="manualDeviceId" class="input" placeholder="Paste device ID to revoke / grant">
+      <div class="row">
+        <button id="revokeBtn" class="btn-danger">Revoke</button>
+        <button id="grantBtn" class="btn-ok">Grant</button>
+      </div>
+    </div>
+
+    <div style="margin-top:10px;">
+      <div class="row">
+        <button id="refreshBtn" class="btn-ok">Refresh Selected Device ID</button>
+        <button id="deleteDeviceBtn" class="btn-danger">Delete Selected Device Entry</button>
+      </div>
+    </div>
+
+    <div style="margin-top:10px;">
+      <div class="note">Revoked devices list (localStorage)</div>
+      <div id="revokedList" class="table"></div>
+    </div>
+
+    <div style="margin-top:8px;">
+      <button id="adminLogoutBtn" class="btn-danger">Logout Admin</button>
+    </div>
+    <div class="note" style="margin-top:8px">Note: these operations are local to this browser/profile. To revoke other users in other browsers you need a central server.</div>
+  </div>
+</div>
+
 <script>
-// Display device id
+// helper keys
+const PUBLIC_KEY = 'publicDevices';
+const REVOKE_KEY = 'revokedDevices';
+const ADMIN_USER = 'lukas';
+const ADMIN_PASS = 'lukas';
+
+// show device id
 try {
-  const data = JSON.parse(localStorage.getItem('deviceLogin'));
-  if (data && data.deviceId) document.getElementById('deviceIdSpan').textContent = data.deviceId;
-} catch(e){ /* ignore */ }
+  const login = JSON.parse(localStorage.getItem('deviceLogin'));
+  if (login && login.deviceId) document.getElementById('deviceIdSpan').textContent = login.deviceId;
+} catch(e){ console.error(e); }
 
-// Tab switching
-function openTab(tabId){
-  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-  const el = document.getElementById(tabId);
-  if(el) el.classList.add('active');
+// Tab switching (basic)
+function openTab(id){
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
 }
 
-// Typewriter
-function rotatingTypewriter(element, phrases, typingSpeed=150, pause=1500) {
-  if(!element) return;
-  let phraseIndex=0,charIndex=0,deleting=false;
-  const cursor=document.createElement('span'); cursor.className='cursor'; element.appendChild(cursor);
-  function type(){
-    const currentPhrase=phrases[phraseIndex];
-    if(!deleting){
-      element.textContent=currentPhrase.substring(0,charIndex+1); element.appendChild(cursor); charIndex++;
-      if(charIndex===currentPhrase.length){deleting=true; setTimeout(type,pause); return;}
-    } else {
-      element.textContent=currentPhrase.substring(0,charIndex-1); element.appendChild(cursor); charIndex--;
-      if(charIndex===0){deleting=false; phraseIndex=(phraseIndex+1)%phrases.length;}
-    }
-    setTimeout(type, typingSpeed);
-  }
-  type();
-}
-rotatingTypewriter(document.getElementById('animatedHeader'), ["More games coming soon!","DEVELOPED BY CO-FOUNDER OF SIGMABM!","THIS SITE DOES SAVE DATA ZACH"],150,1500);
-
+// logout
 function logout(){
   localStorage.removeItem('deviceLogin');
   window.location.replace('index.html');
 }
+
+// ADMIN panel logic
+const adminPanel = document.getElementById('adminPanel');
+const adminUI = document.getElementById('adminUI');
+const adminLoginArea = document.getElementById('adminLoginArea');
+const adminLoginBtn = document.getElementById('adminLoginBtn');
+const adminCancelBtn = document.getElementById('adminCancelBtn');
+const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+const devicesListDiv = document.getElementById('devicesList');
+const revokedListDiv = document.getElementById('revokedList');
+
+function openAdmin(){
+  adminPanel.style.display = 'block';
+  adminLoginArea.style.display = 'block';
+  adminUI.style.display = 'none';
+  document.getElementById('adminUser').value = '';
+  document.getElementById('adminPass').value = '';
+}
+
+adminCancelBtn.addEventListener('click', ()=>{
+  adminPanel.style.display = 'none';
+});
+
+adminLoginBtn.addEventListener('click', ()=>{
+  const u = document.getElementById('adminUser').value.trim();
+  const p = document.getElementById('adminPass').value.trim();
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    adminLoginArea.style.display = 'none';
+    adminUI.style.display = 'block';
+    renderDevices();
+    renderRevoked();
+  } else {
+    alert('Admin login failed');
+  }
+});
+
+adminLogoutBtn.addEventListener('click', ()=>{
+  adminPanel.style.display = 'none';
+  adminLoginArea.style.display = 'block';
+  adminUI.style.display = 'none';
+});
+
+// utility: read & write public devices (local list created when index generates)
+function getPublicDevices(){
+  try { return JSON.parse(localStorage.getItem(PUBLIC_KEY) || '[]'); }
+  catch(e){ return []; }
+}
+function setPublicDevices(arr){ localStorage.setItem(PUBLIC_KEY, JSON.stringify(arr)); }
+
+// utility: revoked devices
+function getRevoked(){ try { return JSON.parse(localStorage.getItem(REVOKE_KEY) || '[]'); } catch(e){ return []; } }
+function setRevoked(arr){ localStorage.setItem(REVOKE_KEY, JSON.stringify(arr)); }
+
+function renderDevices(){
+  const list = getPublicDevices();
+  if (!list.length){ devicesListDiv.innerHTML = '<div class="note">No known devices stored in this browser (publicDevices empty).</div>'; return; }
+  devicesListDiv.innerHTML = '';
+  list.forEach(d=>{
+    const div = document.createElement('div');
+    div.className = 'dev-item';
+    const used = getRevoked().includes(d.deviceId) ? '<span class="bad">REVOKED</span>' : '<span class="good">ACTIVE</span>';
+    div.innerHTML = `<div><strong>${d.username}</strong> · ${d.deviceId} · <small>${new Date(d.createdAt).toLocaleString()}</small></div>
+                     <div style="margin-top:6px">${used}</div>
+                     <div style="margin-top:6px"><button onclick="selectDevice('${d.deviceId}')" style="padding:6px;border-radius:6px;border:none;cursor:pointer">Select</button></div>`;
+    devicesListDiv.appendChild(div);
+  });
+}
+
+let selectedDeviceId = null;
+function selectDevice(id){
+  selectedDeviceId = id;
+  document.getElementById('manualDeviceId').value = id;
+  alert('Selected device: ' + id);
+}
+
+document.getElementById('revokeBtn').addEventListener('click', ()=>{
+  const id = document.getElementById('manualDeviceId').value.trim();
+  if(!id){ alert('Enter device ID'); return; }
+  const revoked = getRevoked();
+  if (revoked.includes(id)){ alert('Already revoked'); return; }
+  revoked.push(id);
+  setRevoked(revoked);
+  renderRevoked();
+  alert('Device revoked locally: ' + id);
+  // if the admin revoked the current device, immediately log it out
+  const current = JSON.parse(localStorage.getItem('deviceLogin')||'{}');
+  if (current.deviceId === id){ alert('You revoked this device. Logging out.'); localStorage.removeItem('deviceLogin'); window.location.replace('index.html'); }
+});
+
+document.getElementById('grantBtn').addEventListener('click', ()=>{
+  const id = document.getElementById('manualDeviceId').value.trim();
+  if(!id){ alert('Enter device ID'); return; }
+  let revoked = getRevoked();
+  revoked = revoked.filter(x => x !== id);
+  setRevoked(revoked);
+  renderRevoked();
+  alert('Device granted (removed from revoked): ' + id);
+});
+
+document.getElementById('refreshBtn').addEventListener('click', ()=>{
+  const id = document.getElementById('manualDeviceId').value.trim();
+  if(!id){ alert('Enter device ID'); return; }
+  // find device in public devices
+  const list = getPublicDevices();
+  const idx = list.findIndex(d => d.deviceId === id);
+  if (idx === -1){ alert('Device entry not found in publicDevices'); return; }
+  const newId = 'dev-' + Math.random().toString(36).slice(2,10);
+  list[idx].deviceId = newId;
+  // if this browser's current device matches old id, update current device as well
+  const current = JSON.parse(localStorage.getItem('deviceLogin')||'{}');
+  if (current.deviceId === id) {
+    current.deviceId = newId;
+    localStorage.setItem('deviceLogin', JSON.stringify(current));
+    document.getElementById('deviceIdSpan').textContent = newId;
+  }
+  setPublicDevices(list);
+  renderDevices();
+  alert('Refreshed device id. New: ' + newId);
+});
+
+document.getElementById('deleteDeviceBtn').addEventListener('click', ()=>{
+  const id = document.getElementById('manualDeviceId').value.trim();
+  if(!id){ alert('Enter device ID'); return; }
+  let list = getPublicDevices();
+  list = list.filter(d => d.deviceId !== id);
+  setPublicDevices(list);
+  renderDevices();
+  alert('Deleted device entry: ' + id);
+});
+
+function renderRevoked(){
+  const arr = getRevoked();
+  if (!arr.length) revokedListDiv.innerHTML = '<div class="note">No revoked device IDs</div>';
+  else revokedListDiv.innerHTML = arr.map(v => `<div style="padding:6px;background:#111;margin:6px 0;border-radius:6px">${v}</div>`).join('');
+}
+
+// Initialize admin UI with current values if admin already logged in
+// (none by default)
+renderRevoked();
 </script>
 </body>
 </html>
