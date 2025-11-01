@@ -3,55 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Device Check</title>
+<title>Checking Device Access</title>
 <style>
 body {
-    background: #1e1e2f;
+    background: #181028;
     color: white;
     font-family: Arial, sans-serif;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    text-align: center;
 }
 h2 {
-    font-size: 2rem;
+    color: #a855f7;
 }
 </style>
 </head>
 <body>
-
 <h2>Checking your device...</h2>
 
 <script>
-// Keys
-const localKey = 'deviceLogin';
-const revokeKey = 'revokedDevices';
+// Define keys
+const DEVICE_KEY = "deviceLogin";
+const REVOKED_KEY = "revokedDevices";
 
-// Make sure revokedDevices exists
-if (!localStorage.getItem(revokeKey)) {
-    localStorage.setItem(revokeKey, JSON.stringify([]));
+// Load revoked list
+let revokedList = JSON.parse(localStorage.getItem(REVOKED_KEY) || "[]");
+
+// Load existing device
+let deviceData = JSON.parse(localStorage.getItem(DEVICE_KEY) || "null");
+
+// If device doesn't exist, create a new one ONCE
+if (!deviceData) {
+    const newId = "dev-" + Math.random().toString(36).substring(2, 10);
+    deviceData = { id: newId, createdAt: Date.now() };
+    localStorage.setItem(DEVICE_KEY, JSON.stringify(deviceData));
 }
 
-const revoked = JSON.parse(localStorage.getItem(revokeKey));
-let loginData = JSON.parse(localStorage.getItem(localKey) || 'null');
-
-// Check if device exists
-if (!loginData) {
-    // Generate new device
-    const deviceId = 'dev-' + Math.random().toString(36).substring(2, 12);
-    loginData = { deviceId: deviceId, createdAt: Date.now() };
-    localStorage.setItem(localKey, JSON.stringify(loginData));
-}
-
-// Check if revoked
-if (revoked.includes(loginData.deviceId)) {
-    alert("Your Access Has Been Revoked");
-    document.body.innerHTML = '<h2 style="color:red;">ACCESS BLOCKED</h2>';
+// --- NEW FIX ---
+// Prevent replacing ID if revoked
+if (revokedList.includes(deviceData.id)) {
+    document.body.innerHTML = `<h2 style="color:red;">Your Access Has Been Revoked</h2>`;
 } else {
-    // Device is valid, redirect to site.html
-    window.location.replace('site.html');
+    // Continue to site.html if valid
+    window.location.href = "site.html";
 }
 </script>
 
