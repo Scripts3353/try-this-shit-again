@@ -9,44 +9,47 @@ app.use(express.json());
 
 const dataFile = path.join(process.cwd(), "logins.json");
 
-// Make sure logins.json exists
-if (!fs.existsSync(dataFile)) fs.writeFileSync(dataFile, JSON.stringify({ devices: [] }, null, 2));
-
-// Helper to load & save
-function loadData() {
-  return JSON.parse(fs.readFileSync(dataFile, "utf-8"));
-}
-function saveData(data) {
-  fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
+if (!fs.existsSync(dataFile)) {
+  fs.writeFileSync(dataFile, JSON.stringify({ devices: [] }, null, 2));
 }
 
-// ✅ Log device ID
+// helper funcs
+const loadData = () => JSON.parse(fs.readFileSync(dataFile, "utf-8"));
+const saveData = (d) => fs.writeFileSync(dataFile, JSON.stringify(d, null, 2));
+
+// ✅ Check if a device is revoked
+app.get("/check/:id", (req, res) => {
+  const data = loadData();
+  const device = data.devices.find((d) => d.id === req.params.id);
+  if (!device) return res.json({ exists: false, revoked: false });
+  res.json({ exists: true, revoked: device.revoked });
+});
+
+// ✅ Log new device
 app.post("/log_device", (req, res) => {
   const { device_id } = req.body;
   if (!device_id) return res.status(400).json({ error: "Missing device_id" });
 
   const data = loadData();
-  const existing = data.devices.find(d => d.id === device_id);
+  const exists = data.devices.find((d) => d.id === device_id);
 
-  if (!existing) {
+  if (!exists) {
     data.devices.push({ id: device_id, revoked: false });
     saveData(data);
   }
-
   res.json({ ok: true });
 });
 
-// ✅ Get all devices (for admin)
-app.get("/get_devices", (req, res) => {
-  const data = loadData();
-  res.json(data.devices);
+// ✅ Get all devices
+app.get("/devices", (req, res) => {
+  res.json(loadData().devices);
 });
 
-// ✅ Revoke a device
+// ✅ Revoke device
 app.post("/revoke", (req, res) => {
   const { device_id } = req.body;
   const data = loadData();
-  const device = data.devices.find(d => d.id === device_id);
+  const device = data.devices.find((d) => d.id === device_id);
   if (device) {
     device.revoked = true;
     saveData(data);
@@ -54,11 +57,11 @@ app.post("/revoke", (req, res) => {
   res.json({ ok: true });
 });
 
-// ✅ Unrevoke a device
+// ✅ Unrevoke device
 app.post("/unrevoke", (req, res) => {
   const { device_id } = req.body;
   const data = loadData();
-  const device = data.devices.find(d => d.id === device_id);
+  const device = data.devices.find((d) => d.id === device_id);
   if (device) {
     device.revoked = false;
     saveData(data);
@@ -66,8 +69,17 @@ app.post("/unrevoke", (req, res) => {
   res.json({ ok: true });
 });
 
-// ✅ Serve static files (index.html, site.html, admin.html)
+// ✅ Delete device
+app.post("/delete", (req, res) => {
+  const { device_id } = req.body;
+  const data = loadData();
+  data.devices = data.devices.filter((d) => d.id !== device_id);
+  saveData(data);
+  res.json({ ok: true });
+});
+
+// ✅ Serve front-end
 app.use(express.static("public"));
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Server running at http://localhost:${PORT}`));
