@@ -30,6 +30,33 @@ nav button:hover { background:#ffcc00; color:#000; }
 <body>
 <div id="revBanner" class="revoked-banner">Your Access Has Been Revoked</div>
 
+   <div id="device-id-display"></div>
+
+<style>
+#device-id-display {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: rgba(120, 70, 200, 0.25);
+  color: #fff;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  z-index: 9999;
+  user-select: none;
+}
+</style>
+
+<script>
+const deviceData = JSON.parse(localStorage.getItem("deviceLogin") || "null");
+if (deviceData && deviceData.id) {
+  document.getElementById("device-id-display").textContent = "Device ID: " + deviceData.id;
+} else {
+  document.getElementById("device-id-display").textContent = "Device ID: unknown";
+}
+</script>
+
 <script>
 /* site startup: verify device record exists and fingerprint not revoked.
    We reuse the same storage keys from index.html:
