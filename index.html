@@ -19,18 +19,22 @@ body { margin:0; font-family:Arial; background: linear-gradient(135deg,#6a0dad,#
     <button id="show" class="btn" style="display:none">Show credentials</button>
   </div>
 
-  <script>
+ <script>
 const localKey = 'deviceLogin';
 const revokeKey = 'revokedDevices';
 
-// Get device and revoked list
+// Ensure revokedDevices exists
+if (!localStorage.getItem(revokeKey)) {
+    localStorage.setItem(revokeKey, JSON.stringify([]));
+}
+
+const revoked = JSON.parse(localStorage.getItem(revokeKey));
 let loginData = JSON.parse(localStorage.getItem(localKey) || 'null');
-const revoked = JSON.parse(localStorage.getItem(revokeKey) || '[]');
 
 // Block revoked devices immediately
 if (loginData && revoked.includes(loginData.deviceId)) {
     document.body.innerHTML = '<h2 style="color:white;text-align:center;margin-top:50px;">Access revoked. Contact admin to reinstate.</h2>';
-    throw new Error('Device revoked'); // stops further execution
+    throw new Error('Device revoked'); // stop execution
 }
 
 // Generate a new device if none exists
@@ -40,9 +44,10 @@ if (!loginData) {
     localStorage.setItem(localKey, JSON.stringify(loginData));
 }
 
-// Device is valid -> go to site.html
+// Device is valid -> redirect to site.html
 window.location.replace('site.html');
 </script>
+
 
 
 <script>
