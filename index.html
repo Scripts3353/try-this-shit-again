@@ -22,8 +22,21 @@ body { margin:0; font-family:Arial; background: linear-gradient(135deg,#6a0dad,#
 <script>
 (function(){
   const localKey = 'deviceLogin';
-  const publicKey = 'publicDevices';
   const revokeKey = 'revokedDevices';
+  const publicKey = 'publicDevices';
+
+// Load device and revoked list
+let loginData = localStorage.getItem(localKey);
+const revoked = JSON.parse(localStorage.getItem(revokeKey) || '[]');
+
+// Block revoked devices from generating new ID
+if (loginData) {
+    loginData = JSON.parse(loginData);
+    if (revoked.includes(loginData.deviceId)) {
+        document.body.innerHTML = '<h2 style="color:white;text-align:center;margin-top:50px;">Access revoked. Contact admin to reinstate.</h2>';
+        throw new Error('Device revoked'); // stops further execution
+    }
+}
   const msg = document.getElementById('msg');
   const showBtn = document.getElementById('show');
 
