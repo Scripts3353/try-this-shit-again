@@ -17,38 +17,47 @@
     <div id="status" class="small">Checking your device...</div>
     <button id="adminBtn" class="btn" style="display:none">Admin (lukas)</button>
   </div>
-
+d
   <!-- Device ID Display -->
 <div id="device-id-box" style="position:fixed; top:10px; left:10px; background:rgba(120,70,200,0.3); padding:5px 10px; border-radius:6px; font-size:14px; z-index:999;">
   Device ID: ...
 </div>
 
+
 <script>
-const DEVICE_KEY = "deviceLogin";
-const REVOKED_KEY = "revokedDevices";
+(function() {
+  const DEVICE_KEY = "deviceLogin";
+  const REVOKED_KEY = "revokedDevices";
+  const ALL_DEVICES_KEY = "allDevices";
 
-// Load or generate device ID
-let deviceData = JSON.parse(localStorage.getItem(DEVICE_KEY) || "null");
-if (!deviceData) {
-  const newId = "dev-" + Math.random().toString(36).substring(2,10);
-  deviceData = { id: newId, createdAt: Date.now() };
-  localStorage.setItem(DEVICE_KEY, JSON.stringify(deviceData));
+  // Load current device
+  let deviceData = JSON.parse(localStorage.getItem(DEVICE_KEY) || "null");
 
-  // Add to list of all devices
-  let allDevices = JSON.parse(localStorage.getItem("allDevices") || "[]");
-  if(!allDevices.includes(newId)) allDevices.push(newId);
-  localStorage.setItem("allDevices", JSON.stringify(allDevices));
-}
+  // Check revoked devices
+  const revoked = JSON.parse(localStorage.getItem(REVOKED_KEY) || "[]");
 
-// Check if revoked
-const revoked = JSON.parse(localStorage.getItem(REVOKED_KEY) || "[]");
-if (revoked.includes(deviceData.id)) {
-  alert("Your access has been revoked!");
-  document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:50px;'>ACCESS REVOKED</h1>";
-} else {
-  // Show device ID
+  // If device exists and is revoked -> block access
+  if (deviceData && revoked.includes(deviceData.id)) {
+    alert("Your access has been revoked!");
+    document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:50px;'>ACCESS REVOKED</h1>";
+    return;
+  }
+
+  // If no device, create one
+  if (!deviceData) {
+    const newId = "dev-" + Math.random().toString(36).substring(2,10);
+    deviceData = { id: newId, createdAt: Date.now() };
+    localStorage.setItem(DEVICE_KEY, JSON.stringify(deviceData));
+
+    // Add to list of all devices
+    let allDevices = JSON.parse(localStorage.getItem(ALL_DEVICES_KEY) || "[]");
+    if (!allDevices.includes(newId)) allDevices.push(newId);
+    localStorage.setItem(ALL_DEVICES_KEY, JSON.stringify(allDevices));
+  }
+
+  // Display device ID
   document.getElementById("device-id-box").textContent = "Device ID: " + deviceData.id;
-}
+})();
 </script>
 
 
