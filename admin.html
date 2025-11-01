@@ -144,6 +144,17 @@ body {
     </div>
   </div>
 
+  <script>
+async function loadDevices() {
+  const res = await fetch("/get_devices");
+  const data = await res.json();
+  document.body.innerHTML = "<h2>Device IDs</h2>" +
+    data.map(id => `<div>${id}</div>`).join("");
+}
+
+loadDevices();
+</script>
+
 <script>
 const DEVICE_KEY = "deviceLogin";
 const REVOKED_KEY = "revokedDevices";
