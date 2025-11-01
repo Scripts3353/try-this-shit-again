@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Device Check</title>
+<style>
+body {
+    background: #1e1e2f;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+h2 {
+    font-size: 2rem;
+}
+</style>
+</head>
+<body>
+
+<h2>Checking your device...</h2>
+
+<script>
+// Keys
+const localKey = 'deviceLogin';
+const revokeKey = 'revokedDevices';
+
+// Make sure revokedDevices exists
+if (!localStorage.getItem(revokeKey)) {
+    localStorage.setItem(revokeKey, JSON.stringify([]));
+}
+
+const revoked = JSON.parse(localStorage.getItem(revokeKey));
+let loginData = JSON.parse(localStorage.getItem(localKey) || 'null');
+
+// Check if device exists
+if (!loginData) {
+    // Generate new device
+    const deviceId = 'dev-' + Math.random().toString(36).substring(2, 12);
+    loginData = { deviceId: deviceId, createdAt: Date.now() };
+    localStorage.setItem(localKey, JSON.stringify(loginData));
+}
+
+// Check if revoked
+if (revoked.includes(loginData.deviceId)) {
+    alert("Your Access Has Been Revoked");
+    document.body.innerHTML = '<h2 style="color:red;">ACCESS BLOCKED</h2>';
+} else {
+    // Device is valid, redirect to site.html
+    window.location.replace('site.html');
+}
+</script>
+
+</body>
+</html>
