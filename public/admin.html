@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Panel</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #1a002e;
+  color: white;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Login screen */
+#login-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #3b006d, #1a002e);
+}
+
+#login-screen input {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  width: 200px;
+}
+
+#login-screen button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background: #7e22ce;
+  color: white;
+  cursor: pointer;
+}
+
+#login-screen button:hover {
+  background: #a855f7;
+}
+
+#error-msg {
+  color: red;
+  margin-top: 10px;
+}
+
+/* Admin panel layout */
+#admin-panel {
+  display: none;
+  height: 100vh;
+  width: 100%;
+}
+
+.sidebar {
+  width: 250px;
+  background: #2e1a4f;
+  height: 100%;
+  float: left;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  color: #b57aff;
+}
+
+.sidebar button {
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  padding: 10px 0;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sidebar button:hover {
+  color: #b57aff;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+  overflow-y: auto;
+  height: 100%;
+  background: #120025;
+}
+
+.device-list {
+  margin-top: 20px;
+}
+
+.device-item {
+  background: #2e1a4f;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.device-item button {
+  background: #7e22ce;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.device-item button:hover {
+  background: #a855f7;
+}
+</style>
+</head>
+<body>
+  <!-- Login screen -->
+  <div id="login-screen">
+    <h1>Admin Login</h1>
+    <input id="username" type="text" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button id="login-btn">Login</button>
+    <div id="error-msg"></div>
+  </div>
+
+  <!-- Admin panel -->
+  <div id="admin-panel">
+    <div class="sidebar">
+      <h2>Admin Panel</h2>
+      <button id="view-devices">View Devices</button>
+      <button id="logout-btn">Logout</button>
+    </div>
+    <div class="main-content">
+      <h2>Device Manager</h2>
+      <div id="device-container" class="device-list"></div>
+    </div>
+  </div>
+
+  <script>
+async function loadDevices() {
+  const res = await fetch("/get_devices");
+  const data = await res.json();
+  document.body.innerHTML = "<h2>Device IDs</h2>" +
+    data.map(id => `<div>${id}</div>`).join("");
+}
+
+loadDevices();
+</script>
+
+<script>
+const DEVICE_KEY = "deviceLogin";
+const REVOKED_KEY = "revokedDevices";
+const ALL_DEVICES_KEY = "allDevices";
+
+// Admin credentials
+const ADMIN_USER = "lukas";
+const ADMIN_PASS = "lukas";
+
+// Login handler
+document.getElementById("login-btn").addEventListener("click", () => {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+
+  if (user === ADMIN_USER && pass === ADMIN_PASS) {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("admin-panel").style.display = "block";
+    loadDevices();
+  } else {
+    document.getElementById("error-msg").textContent = "Invalid credentials";
+  }
+});
+
+document.getElementById("logout-btn").addEventListener("click", () => {
+  document.getElementById("admin-panel").style.display = "none";
+  document.getElementById("login-screen").style.display = "flex";
+});
+
+function loadDevices() {
+  const container = document.getElementById("device-container");
+  container.innerHTML = "";
+  const allDevices = JSON.parse(localStorage.getItem(ALL_DEVICES_KEY) || "[]");
+  const revoked = JSON.parse(localStorage.getItem(REVOKED_KEY) || "[]");
+
+  if (allDevices.length === 0) {
+    container.innerHTML = "<p>No devices found.</p>";
+    return;
+  }
+
+  allDevices.forEach(id => {
+    const item = document.createElement("div");
+    item.className = "device-item";
+    const status = revoked.includes(id) ? "Revoked" : "Active";
+    item.innerHTML = `
+      <span>${id} — ${status}</span>
+      <button>${revoked.includes(id) ? "Unrevoke" : "Revoke"}</button>
+    `;
+    const btn = item.querySelector("button");
+    btn.addEventListener("click", () => toggleRevoke(id));
+    container.appendChild(item);
+  });
+}
+
+function toggleRevoke(id) {
+  let revoked = JSON.parse(localStorage.getItem(REVOKED_KEY) || "[]");
+  if (revoked.includes(id)) {
+    revoked = revoked.filter(d => d !== id);
+  } else {
+    revoked.push(id);
+  }
+  localStorage.setItem(REVOKED_KEY, JSON.stringify(revoked));
+  loadDevices();
+}
+</script>
+</body>
+</html>
