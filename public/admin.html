@@ -1,223 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Admin Panel</title>
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #1a002e;
-  color: white;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* Login screen */
-#login-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #3b006d, #1a002e);
-}
-
-#login-screen input {
-  margin: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  width: 200px;
-}
-
-#login-screen button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background: #7e22ce;
-  color: white;
-  cursor: pointer;
-}
-
-#login-screen button:hover {
-  background: #a855f7;
-}
-
-#error-msg {
-  color: red;
-  margin-top: 10px;
-}
-
-/* Admin panel layout */
-#admin-panel {
-  display: none;
-  height: 100vh;
-  width: 100%;
-}
-
-.sidebar {
-  width: 250px;
-  background: #2e1a4f;
-  height: 100%;
-  float: left;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-
-.sidebar h2 {
-  margin-top: 0;
-  color: #b57aff;
-}
-
-.sidebar button {
-  background: none;
-  border: none;
-  color: white;
-  text-align: left;
-  padding: 10px 0;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.sidebar button:hover {
-  color: #b57aff;
-}
-
-.main-content {
-  margin-left: 250px;
-  padding: 20px;
-  overflow-y: auto;
-  height: 100%;
-  background: #120025;
-}
-
-.device-list {
-  margin-top: 20px;
-}
-
-.device-item {
-  background: #2e1a4f;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.device-item button {
-  background: #7e22ce;
-  border: none;
-  color: white;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-.device-item button:hover {
-  background: #a855f7;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <style>
+    body {
+      background: #0d1117;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #161b22;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #30363d;
+    }
+    th {
+      background: #21262d;
+    }
+    tr:hover {
+      background: #1f2933;
+    }
+    button {
+      border: none;
+      padding: 6px 12px;
+      margin: 2px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .revoke { background: #d33; color: #fff; }
+    .unrevoke { background: #3c3; color: #000; }
+    .delete { background: #777; color: #fff; }
+    /* Login box */
+    #loginBox {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #loginBox input {
+      margin: 5px;
+      padding: 10px;
+      width: 200px;
+      border: none;
+      border-radius: 5px;
+    }
+    #loginBox button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      background: linear-gradient(45deg, #8a2be2, #5d1bb0);
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #panel {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <!-- Login screen -->
-  <div id="login-screen">
+  <div id="loginBox">
     <h1>Admin Login</h1>
-    <input id="username" type="text" placeholder="Username" />
-    <input id="password" type="password" placeholder="Password" />
-    <button id="login-btn">Login</button>
-    <div id="error-msg"></div>
+    <input type="text" id="user" placeholder="Username">
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="msg" style="color:red"></p>
   </div>
 
-  <!-- Admin panel -->
-  <div id="admin-panel">
-    <div class="sidebar">
-      <h2>Admin Panel</h2>
-      <button id="view-devices">View Devices</button>
-      <button id="logout-btn">Logout</button>
-    </div>
-    <div class="main-content">
-      <h2>Device Manager</h2>
-      <div id="device-container" class="device-list"></div>
-    </div>
+  <div id="panel">
+    <h1>Admin Panel</h1>
+    <table id="table">
+      <thead>
+        <tr><th>Device ID</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="logout()" style="margin-top:20px;background:#444;color:#fff;padding:8px 16px;border:none;border-radius:6px;">Logout</button>
   </div>
 
   <script>
-async function loadDevices() {
-  const res = await fetch("/get_devices");
-  const data = await res.json();
-  document.body.innerHTML = "<h2>Device IDs</h2>" +
-    data.map(id => `<div>${id}</div>`).join("");
-}
+    const correctUser = "lukas";
+    const correctPass = "lukas";
 
-loadDevices();
-</script>
+    function login() {
+      const u = document.getElementById("user").value;
+      const p = document.getElementById("pass").value;
+      if (u === correctUser && p === correctPass) {
+        localStorage.setItem("isAdmin", "true");
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("panel").style.display = "block";
+        load();
+      } else {
+        document.getElementById("msg").innerText = "Invalid login.";
+      }
+    }
 
-<script>
-const DEVICE_KEY = "deviceLogin";
-const REVOKED_KEY = "revokedDevices";
-const ALL_DEVICES_KEY = "allDevices";
+    function logout() {
+      localStorage.removeItem("isAdmin");
+      location.reload();
+    }
 
-// Admin credentials
-const ADMIN_USER = "lukas";
-const ADMIN_PASS = "lukas";
+    async function load() {
+      const res = await fetch("/devices");
+      const data = await res.json();
+      const tbody = document.querySelector("#table tbody");
+      tbody.innerHTML = "";
+      for (const d of data) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${d.id}</td>
+          <td>${d.revoked ? "🚫 Revoked" : "✅ Active"}</td>
+          <td>
+            <button class="revoke" onclick="revoke('${d.id}')">Revoke</button>
+            <button class="unrevoke" onclick="unrevoke('${d.id}')">Unrevoke</button>
+            <button class="delete" onclick="del('${d.id}')">Delete</button>
+          </td>`;
+        tbody.appendChild(row);
+      }
+    }
 
-// Login handler
-document.getElementById("login-btn").addEventListener("click", () => {
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
+    async function revoke(id) {
+      await fetch("/revoke", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ device_id: id }) });
+      load();
+    }
+    async function unrevoke(id) {
+      await fetch("/unrevoke", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ device_id: id }) });
+      load();
+    }
+    async function del(id) {
+      await fetch("/delete", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ device_id: id }) });
+      load();
+    }
 
-  if (user === ADMIN_USER && pass === ADMIN_PASS) {
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("admin-panel").style.display = "block";
-    loadDevices();
-  } else {
-    document.getElementById("error-msg").textContent = "Invalid credentials";
-  }
-});
-
-document.getElementById("logout-btn").addEventListener("click", () => {
-  document.getElementById("admin-panel").style.display = "none";
-  document.getElementById("login-screen").style.display = "flex";
-});
-
-function loadDevices() {
-  const container = document.getElementById("device-container");
-  container.innerHTML = "";
-  const allDevices = JSON.parse(localStorage.getItem(ALL_DEVICES_KEY) || "[]");
-  const revoked = JSON.parse(localStorage.getItem(REVOKED_KEY) || "[]");
-
-  if (allDevices.length === 0) {
-    container.innerHTML = "<p>No devices found.</p>";
-    return;
-  }
-
-  allDevices.forEach(id => {
-    const item = document.createElement("div");
-    item.className = "device-item";
-    const status = revoked.includes(id) ? "Revoked" : "Active";
-    item.innerHTML = `
-      <span>${id} — ${status}</span>
-      <button>${revoked.includes(id) ? "Unrevoke" : "Revoke"}</button>
-    `;
-    const btn = item.querySelector("button");
-    btn.addEventListener("click", () => toggleRevoke(id));
-    container.appendChild(item);
-  });
-}
-
-function toggleRevoke(id) {
-  let revoked = JSON.parse(localStorage.getItem(REVOKED_KEY) || "[]");
-  if (revoked.includes(id)) {
-    revoked = revoked.filter(d => d !== id);
-  } else {
-    revoked.push(id);
-  }
-  localStorage.setItem(REVOKED_KEY, JSON.stringify(revoked));
-  loadDevices();
-}
-</script>
+    // Auto login if remembered
+    if (localStorage.getItem("isAdmin") === "true") {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("panel").style.display = "block";
+      load();
+    }
+  </script>
 </body>
 </html>
