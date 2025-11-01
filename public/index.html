@@ -1,1 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Login - ReallyUnb0ck3d</title>
+<style>
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#6a0dad,#3c0f5f);color:#fff;display:flex;align-items:center;justify-content:center;height:100vh}
+  .box{background:rgba(0,0,0,0.85);padding:24px;border-radius:12px;width:360px;text-align:center}
+  .small{font-size:13px;color:#ddd;white-space:pre-wrap;margin-top:10px}
+  .btn{margin-top:12px;padding:10px 14px;border-radius:8px;border:none;background:#9d4edd;color:#fff;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+  <div class="box">
+    <h2>Welcome to ReallyUnb0ck3d</h2>
+    <div id="status" class="small">Checking your device...</div>
+    <button id="adminBtn" class="btn" style="display:none">Admin (lukas)</button>
+  </div>
+d
+  <!-- Device ID Display -->
+<div id="device-id-box" style="position:fixed; top:10px; left:10px; background:rgba(120,70,200,0.3); padding:5px 10px; border-radius:6px; font-size:14px; z-index:999;">
+  Device ID: ...
+</div>
 
+
+<script>
+(function() {
+  const DEVICE_KEY = "deviceLogin";
+  const REVOKED_KEY = "revokedDevices";
+  const ALL_DEVICES_KEY = "allDevices";
+
+  // Load current device
+  let deviceData = JSON.parse(localStorage.getItem(DEVICE_KEY) || "null");
+
+  // Check revoked devices
+  const revoked = JSON.parse(localStorage.getItem(REVOKED_KEY) || "[]");
+
+  // If device exists and is revoked -> block access
+  if (deviceData && revoked.includes(deviceData.id)) {
+    alert("Your access has been revoked!");
+    document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:50px;'>ACCESS REVOKED</h1>";
+    return;
+  }
+
+  // If no device, create one
+  if (!deviceData) {
+    const newId = "dev-" + Math.random().toString(36).substring(2,10);
+    deviceData = { id: newId, createdAt: Date.now() };
+    localStorage.setItem(DEVICE_KEY, JSON.stringify(deviceData));
+
+    // Add to list of all devices
+    let allDevices = JSON.parse(localStorage.getItem(ALL_DEVICES_KEY) || "[]");
+    if (!allDevices.includes(newId)) allDevices.push(newId);
+    localStorage.setItem(ALL_DEVICES_KEY, JSON.stringify(allDevices));
+  }
+
+  // Display device ID
+  document.getElementById("device-id-box").textContent = "Device ID: " + deviceData.id;
+})();
+</script>
+
+
+<script>
+/*
+  Robust client-side approach:
+  - compute fingerprint (sha256) of several browser properties + canvas fingerprint
+  - maintain revoked list and device record in three storages: localStorage, cookie, IndexedDB
+  - If fingerprint is revoked -> show block message and do NOT generate a new device id
+  - Otherwise, if device record absent, create it and store across storages, then redirect to site.html
+*/
+
+// utility: sha256 -> hex
+async function sha256Hex(input) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const bytes = new Uint8Array(hash);
+  return Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// canvas fingerprint
+function canvasHash() {
+  try {
+    const c = document.createElement('canvas');
+    const ctx = c.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = "14px 'Arial'";
+    ctx.fillStyle = '#f60';
+    ctx.fillRect(125,1,62,20);
+    ctx.fillStyle = '#069';
+    ctx.fillText('Cwm fjordbank glyphs vext quiz, 123', 2, 15);
+    ctx.fillStyle = 'rgba(102, 204, 0, 0.2)';
+    ctx.fillText('Cwm fjordbank glyphs vext quiz, 123', 4, 17);
+    const data = c.toDataURL();
+    return data;
+  } catch(e) {
+    return '';
+  }
+}
+
+// IndexedDB helpers
+function idbSet(key, value) {
+  return new Promise((resolve) => {
+    try {
+      const openReq = indexedDB.open('reallyunb0cked-db', 1);
+      openReq.onupgradeneeded = () => {
+        openReq.result.createObjectStore('store');
+      };
+      openReq.onsuccess = () => {
+        const db = openReq.result;
+        const tx = db.transaction('store', 'readwrite');
+        tx.objectStore('store').put(value, key);
+        tx.oncomplete = () => { db.close(); resolve(true); };
+      };
+      openReq.onerror = () => resolve(false);
+    } catch(e) { resolve(false); }
+  });
+}
+function idbGet(key) {
+  return new Promise((resolve) => {
+    try {
+      const openReq = indexedDB.open('reallyunb0cked-db', 1);
+      openReq.onupgradeneeded = () => {
+        openReq.result.createObjectStore('store');
+      };
+      openReq.onsuccess = () => {
+        const db = openReq.result;
+        const tx = db.transaction('store', 'readonly');
+        const req = tx.objectStore('store').get(key);
+        req.onsuccess = () => { db.close(); resolve(req.result); };
+        req.onerror = () => { db.close(); resolve(null); };
+      };
+      openReq.onerror = () => resolve(null);
+    } catch(e) { resolve(null); }
+  });
+}
+
+// cookie helpers
+function setCookie(name, value, days) {
+  const d = new Date();
+  d.setTime(d.getTime() + (days||3650)*24*60*60*1000); // default 10 years
+  document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; expires=${d.toUTCString()}; path=/; SameSite=Lax`;
+}
+function getCookie(name) {
+  const m = document.cookie.match('(^|;)\\s*' + encodeURIComponent(name) + '\\s*=\\s*([^;]+)');
+  return m ? decodeURIComponent(m.pop()) : null;
+}
+
+// multi-storage revoked/device helpers
+const DEVICE_KEY = 'deviceLoginV2';
+const REVOKE_KEY = 'revokedFingerprintsV2';
+const PUBLIC_KEY = 'publicDevicesV2';
+
+async function readRevoked() {
+  // try localStorage, cookie, indexedDB; merge
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem(REVOKE_KEY) || '[]'); } catch(e){}
+  try { const c = getCookie(REVOKE_KEY); if(c) { const arr = JSON.parse(c); list = Array.from(new Set(list.concat(arr))); } } catch(e){}
+  try { const idb = await idbGet(REVOKE_KEY); if(idb) list = Array.from(new Set(list.concat(idb))); } catch(e){}
+  return list;
+}
+async function writeRevoked(list) {
+  try { localStorage.setItem(REVOKE_KEY, JSON.stringify(list)); } catch(e){}
+  try { setCookie(REVOKE_KEY, JSON.stringify(list)); } catch(e){}
+  try { await idbSet(REVOKE_KEY, list); } catch(e){}
+}
+async function readPublicDevices() {
+  try { const ls = JSON.parse(localStorage.getItem(PUBLIC_KEY) || '[]'); return ls; } catch(e){}
+  try { const idb = await idbGet(PUBLIC_KEY); if (idb) return idb; } catch(e){}
+  return [];
+}
+async function writePublicDevices(list) {
+  try { localStorage.setItem(PUBLIC_KEY, JSON.stringify(list)); } catch(e){}
+  try { await idbSet(PUBLIC_KEY, list); } catch(e){}
+}
+
+// main
+(async function main(){
+  const statusEl = document.getElementById('status');
+  // compute fingerprint
+  const parts = [
+    navigator.userAgent || '',
+    navigator.platform || '',
+    navigator.language || '',
+    (screen && screen.width) || '',
+    (screen && screen.height) || '',
+    Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone || '' : '',
+    canvasHash()
+  ].join('||');
+  const fingerprint = await sha256Hex(parts);
+
+  // ensure revoked array exists across storages
+  let revoked = await readRevoked();
+  if (!Array.isArray(revoked)) revoked = [];
+
+  // check if fingerprint is revoked
+  if (revoked.includes(fingerprint)) {
+    // BLOCK: do NOT create new device id
+    statusEl.textContent = 'Your Access Has Been Revoked';
+    alert('Your Access Has Been Revoked');
+    // show admin button so admin can restore locally if they have creds
+    const adminBtn = document.getElementById('adminBtn');
+    adminBtn.style.display = 'inline-block';
+    adminBtn.addEventListener('click', async ()=> {
+      const u = prompt('Admin username:'); const p = prompt('Admin password:');
+      if (u === 'lukas' && p === 'lukas') {
+        // reinstate fingerprint (remove from revoked)
+        revoked = revoked.filter(x => x !== fingerprint);
+        await writeRevoked(revoked);
+        alert('Fingerprint reinstated locally. Refresh the page.');
+        location.reload();
+      } else alert('Invalid admin credentials');
+    });
+    return; // STOP — revoked fingerprint can't generate new device
+  }
+
+  // fingerprint not revoked
+  statusEl.textContent = 'Device OK — checking existing device...';
+
+  // try to find device record in localStorage/cookie/indexedDB by fingerprint
+  let device = null;
+  // localStorage
+  try { const d = JSON.parse(localStorage.getItem(DEVICE_KEY) || 'null'); if (d && d.fingerprint === fingerprint) device = d; } catch(e){}
+  // cookie
+  if (!device) {
+    try {
+      const cookieDevice = getCookie(DEVICE_KEY);
+      if (cookieDevice) {
+        const d = JSON.parse(cookieDevice);
+        if (d && d.fingerprint === fingerprint) device = d;
+      }
+    } catch(e){}
+  }
+  // indexedDB
+  if (!device) {
+    try { const idbDev = await idbGet(DEVICE_KEY); if (idbDev && idbDev.fingerprint === fingerprint) device = idbDev; } catch(e){}
+  }
+
+  // If no device record found, create one and store across storages
+  if (!device) {
+    // create device ID but make sure we won't create one if fingerprint somehow in revoked (double-check)
+    revoked = await readRevoked();
+    if (revoked.includes(fingerprint)) {
+      statusEl.textContent = 'Your Access Has Been Revoked';
+      alert('Your Access Has Been Revoked');
+      return;
+    }
+
+    const newId = 'dev-' + Math.random().toString(36).slice(2,12);
+    device = { deviceId: newId, fingerprint, createdAt: new Date().toISOString() };
+
+    // store in localStorage, cookie, indexedDB
+    try { localStorage.setItem(DEVICE_KEY, JSON.stringify(device)); } catch(e){}
+    try { setCookie(DEVICE_KEY, JSON.stringify(device)); } catch(e){}
+    try { await idbSet(DEVICE_KEY, device); } catch(e){}
+    // also append to public devices list (local origin list)
+    try {
+      const list = await readPublicDevices();
+      list.push(device);
+      await writePublicDevices(list);
+    } catch(e){}
+  }
+
+  // OK — redirect to site.html carrying nothing (site will read device from storage)
+  statusEl.textContent = 'Device ready — redirecting...';
+  setTimeout(()=> window.location.replace('site.html'), 700);
+
+})(); // end main
+</script>
+</body>
+</html>
