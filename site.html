@@ -48,13 +48,22 @@ nav button:hover { background:#ffcc00; color:#000; }
 }
 </style>
 
+<div id="deviceBox" style="position:fixed;top:10px;left:10px;background:rgba(0,0,0,0.6);color:#fff;padding:8px 12px;border-radius:6px;font-size:14px;border:1px solid #333;z-index:9999;">
+  Loading device ID...
+</div>
+
 <script>
-const deviceData = JSON.parse(localStorage.getItem("deviceLogin") || "null");
-if (deviceData && deviceData.id) {
-  document.getElementById("device-id-display").textContent = "Device ID: " + deviceData.id;
-} else {
-  document.getElementById("device-id-display").textContent = "Device ID: unknown";
-}
+  function generateDeviceID() {
+    return crypto.randomUUID();
+  }
+
+  let deviceID = localStorage.getItem("device_id");
+  if (!deviceID) {
+    deviceID = generateDeviceID();
+    localStorage.setItem("device_id", deviceID);
+  }
+
+  document.getElementById("deviceBox").textContent = "Device ID: " + deviceID;
 </script>
 
 <script>
