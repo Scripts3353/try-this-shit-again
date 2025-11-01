@@ -52,6 +52,19 @@ nav button:hover { background:#ffcc00; color:#000; }
   Loading device ID...
 </div>
 
+   <script>
+const deviceID = localStorage.getItem("device_id") || crypto.randomUUID();
+localStorage.setItem("device_id", deviceID);
+
+// send to backend
+fetch("/log_device", {
+  method: "POST",
+  headers: {"Content-Type": "application/json"},
+  body: JSON.stringify({ device_id: deviceID })
+});
+</script>
+
+
 <script>
   function generateDeviceID() {
     return crypto.randomUUID();
