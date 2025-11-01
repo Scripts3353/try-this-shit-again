@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Device ID</title>
+<style>
+body {
+  background: linear-gradient(135deg, #3b006d, #1a002e);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+#device-id-display {
+  background: rgba(120, 70, 200, 0.3);
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  user-select: all;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(120, 70, 200, 0.4);
+}
+button {
+  background: #7e22ce;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+button:hover {
+  background: #a855f7;
+}
+</style>
+</head>
+<body>
+
+<h2>Your Device ID</h2>
+<div id="device-id-display">Generating...</div>
+<button id="copy-btn">Copy ID</button>
+
+<script>
+const DEVICE_KEY = "deviceLogin";
+let deviceData = JSON.parse(localStorage.getItem(DEVICE_KEY) || "null");
+
+// Generate one if it doesn’t exist yet
+if (!deviceData) {
+  const newId = "dev-" + Math.random().toString(36).substring(2, 10);
+  deviceData = { id: newId, createdAt: Date.now() };
+  localStorage.setItem(DEVICE_KEY, JSON.stringify(deviceData));
+}
+
+const deviceIdDiv = document.getElementById("device-id-display");
+deviceIdDiv.textContent = deviceData.id;
+
+// Copy button
+document.getElementById("copy-btn").addEventListener("click", () => {
+  navigator.clipboard.writeText(deviceData.id);
+  alert("Device ID copied to clipboard!");
+});
+</script>
+
+</body>
+</html>
