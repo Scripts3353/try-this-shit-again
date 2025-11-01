@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,6 +57,29 @@ nav button:hover { background:#ffcc00; color:#000; }
 </style>
 </head>
 <body>
+  <script>
+    const localKey = 'deviceLogin';
+    const revokeKey = 'revokedDevices';
+
+    let loginData = localStorage.getItem(localKey);
+    const revoked = JSON.parse(localStorage.getItem(revokeKey) || '[]');
+
+    if (!loginData) {
+        // Device never created -> redirect to login
+        window.location.replace('index.html');
+    } else {
+        loginData = JSON.parse(loginData);
+        if (revoked.includes(loginData.deviceId)) {
+            // Device revoked -> redirect to login
+            alert('Your device has been revoked!');
+            window.location.replace('index.html');
+        }
+    }
+  </script>
+
+  <!-- Rest of your body content goes here -->
+
+
 <script>
 // Enforce login at top: ensure deviceLogin exists and not revoked
 const loginRaw = localStorage.getItem('deviceLogin');
