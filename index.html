@@ -19,44 +19,33 @@ body { margin:0; font-family:Arial; background: linear-gradient(135deg,#6a0dad,#
     <button id="show" class="btn" style="display:none">Show credentials</button>
   </div>
 
-<script>
-(function(){
-  const localKey = 'deviceLogin';
-  const revokeKey = 'revokedDevices';
-  const publicKey = 'publicDevices';
+  <script>
+const localKey = 'deviceLogin';
+const revokeKey = 'revokedDevices';
 
-// Load device and revoked list
-let loginData = localStorage.getItem(localKey);
+// Get device and revoked list
+let loginData = JSON.parse(localStorage.getItem(localKey) || 'null');
 const revoked = JSON.parse(localStorage.getItem(revokeKey) || '[]');
 
-// Block revoked devices from generating new ID
-if (loginData) {
-    loginData = JSON.parse(loginData);
-    if (revoked.includes(loginData.deviceId)) {
-        document.body.innerHTML = '<h2 style="color:white;text-align:center;margin-top:50px;">Access revoked. Contact admin to reinstate.</h2>';
-        throw new Error('Device revoked'); // stops further execution
-    }
+// Block revoked devices immediately
+if (loginData && revoked.includes(loginData.deviceId)) {
+    document.body.innerHTML = '<h2 style="color:white;text-align:center;margin-top:50px;">Access revoked. Contact admin to reinstate.</h2>';
+    throw new Error('Device revoked'); // stops further execution
 }
-  const msg = document.getElementById('msg');
-  const showBtn = document.getElementById('show');
 
-  // check if device exists
-  let loginData = localStorage.getItem(localKey);
-  if (loginData) {
-    loginData = JSON.parse(loginData);
+// Generate a new device if none exists
+if (!loginData) {
+    const deviceId = 'dev-' + Math.random().toString(36).substring(2, 12);
+    loginData = { deviceId: deviceId, createdAt: Date.now() };
+    localStorage.setItem(localKey, JSON.stringify(loginData));
+}
 
-    // check if revoked
-    const revokedRaw = localStorage.getItem(revokeKey) || '[]';
-    const revoked = JSON.parse(revokedRaw);
-    if (revoked.includes(loginData.deviceId)) {
-      msg.textContent = 'Your device is currently revoked. You cannot log in until it is reinstated.';
-      return; // stop redirecting / generating new device
-    }
+// Device is valid -> go to site.html
+window.location.replace('site.html');
+</script>
 
-    // device is valid -> redirect
-    window.location.replace('site.html');
-    return;
-  }
+
+<script>
 
   // generate new device
   const deviceId = 'dev-' + Math.random().toString(36).slice(2,10);
