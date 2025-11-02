@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Really Unbl0ck3d</title>
+  <meta name="description" content="Play hundreds of unblocked games at school or home. No downloads, no blocks. Powered by Vercel." />
+
+  <!-- Favicon (Optional - Add later) -->
+  <link rel="icon" href="data:,">
+
+  <style>
+    :root {
+      --purple-1: #6a1b9a;
+      --purple-2: #4a148c;
+      --purple-3: #7b1fa2;
+      --purple-light: #9c27b0;
+      --text-light: #e8eaf6;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(255, 255, 255, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+      color: var(--text-light);
+      min-height: 100vh;
+      background-attachment: fixed;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      backdrop-filter: blur(10px);
+      background: rgba(74, 20, 140, 0.4);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #e040fb, #7c4dff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .tab-btn:hover, .tab-btn.active {
+      background: var(--purple-light);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(156, 39, 176, 0.4);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+
+    .game-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      position: relative;
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(156, 39, 176, 0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .game-card:hover::before {
+      opacity: 1;
+    }
+
+    .game-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+      background: var(--card-hover);
+      border-color: var(--purple-light);
+    }
+
+    .game-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .game-card h3 {
+      padding: 0.8rem 0.5rem 1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .game-card h3 small {
+      display: block;
+      font-weight: 400;
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-top: 0.2rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 3rem;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2.2rem; }
+      .game-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+      .game-card h3 { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Unblocked Games</h1>
+    <p class="subtitle">Play 100+ games instantly — no blocks, no downloads. Hosted on Vercel.</p>
+  </header>
+
+  <div class="container">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="openTab('games')">All Games</button>
+      <!-- Add more tabs later: Action, Puzzle, etc. -->
+    </div>
+
+    <!-- Games Tab -->
+    <div id="games" class="tab-content active">
+      <div class="game-grid">
+        <div class="game-card" onclick="window.location.href='game.html?file=games/COMMENTS.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/596-uu.png" alt="COMMENTS">
+          <h3>SUGGESTIONS!!</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/1v1.LoL.html'">
+          <img src="https://tse1.mm.bing.net/th/id/OIP.jv6iR5gwlta2uwmJ-zoJmgHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="1v1.LoL">
+          <h3>1v1.LoL</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/2048 Merge Run.html'">
+          <img src="https://th.bing.com/th/id/OIP.6fTgpyMudOUZtAeJRQ9GEwAAAA?w=147&h=158&c=7&r=0&o=7" alt="2048 Merge Run">
+          <h3>2048 Merge Run</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Adventure Capatalist.html'">
+          <img src="https://th.bing.com/th/id/OIP.cn1P453UfDub7AaFBRoO0gHaHa?w=181&h=182&c=7&r=0&o=7" alt="Adventure Capatalist">
+          <h3>Adventure Capitalist</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Basket Random.html'">
+          <img src="https://th.bing.com/th/id/R.3279f70eec52d7b6c1a4e72021fe9b49?rik=U6kdaNpz86dnyw&pid=ImgRaw&r=0" alt="Basket Random">
+          <h3>Basket Random</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Boxing Random.html'">
+          <img src="https://tse2.mm.bing.net/th/id/OIP.Rt480d2t4SEiajoVvPNxAwAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Boxing Random">
+          <h3>Boxing Random</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Dadish 2.html'">
+          <img src="https://th.bing.com/th/id/OIP.4zoJ1qn3b0m4BMN4WDqXpwHaHa?w=178&h=180&c=7&r=0&o=7" alt="Dadish 2">
+          <h3>Dadish 2</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Dadish 3.html'">
+          <img src="https://th.bing.com/th/id/OIP.qDULYJ66o1pvZ_X2W3PqXwHaHa?w=159&h=180&c=7&r=0&o=7" alt="Dadish 3">
+          <h3>Dadish 3</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Dadish.html'">
+          <img src="https://th.bing.com/th/id/OIP.dRhGIzN8Wnu1sQKYlyjoygHaHa?w=180&h=180&c=7&r=0&o=7" alt="Dadish">
+          <h3>Dadish</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Daily Dadish.html'">
+          <img src="https://th.bing.com/th/id/OIP.gX7YJ_JbsmnyTMy_ONrHxwHaHa?w=156&h=180&c=7&r=0&o=7" alt="Daily Dadish">
+          <h3>Daily Dadish</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Death Run 3D.html'">
+          <img src="https://play-lh.googleusercontent.com/dEu4Lrs5Ke5ZHDMedRkjjtYq1G22gGccxeIU_ZJNqqwLeSYshuUxBU0KCrSG7lEEwBo" alt="Death Run 3D">
+          <h3>Death Run 3D</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Dig Deep.html'">
+          <img src="https://th.bing.com/th/id/OIP.YUcEfbT0RA-uoutBX-8qiQHaGY?w=212&h=183&c=7&r=0&o=7" alt="Dig Deep">
+          <h3>Dig Deep</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Doge Miner.html'">
+          <img src="https://th.bing.com/th/id/OIP.8qiNzyPViFpETptqypnL4AHaHa?w=167&h=180&c=7&r=0&o=7" alt="Doge Miner">
+          <h3>Doge Miner</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Escape Road.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/264.png" alt="Escape Road">
+          <h3>Escape Road</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Flip Master.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/392.png" alt="Flip Master">
+          <h3>Flip Master</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Getting Over It with Bennett Foddy.html'">
+          <img src="https://th.bing.com/th/id/OIP.DoF8lVpkK92j9OnNye__rQHaEK?w=313&h=180&c=7&r=0&o=7" alt="Getting Over It">
+          <h3>Getting Over It</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/MonkeyMart.html'">
+          <img src="https://th.bing.com/th/id/OIP.GmKIjCrlse8QXE9EB8175gHaHa?w=180&h=180&c=7&r=0&o=7" alt="MonkeyMart">
+          <h3>Monkey Mart</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Pac-Man Superfast.html'">
+          <img src="https://th.bing.com/th/id/OIP.WYvgl82DmC7P4Pdyf2KddQHaEK?w=288&h=180&c=7&r=0&o=7" alt="Pac-Man Superfast">
+          <h3>Pac-Man Superfast</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Ragdoll Archers.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/186.png" alt="Ragdoll Archers">
+          <h3>Ragdoll Archers</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Retro Bowl.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/33.png" alt="Retro Bowl">
+          <h3>Retro Bowl</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Slope 2.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/368.png" alt="Slope 2">
+          <h3>Slope 2</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/SolarSandbox.html'">
+          <img src="https://solarsmash.co/data/image/game/solar-sandbox/solar-sandbox.jpg" alt="SolarSandbox">
+          <h3>Solar Sandbox</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Twerk Race 3D.html'">
+          <img src="https://th.bing.com/th/id/OIP.tAYNPAIEKwy5Eb_3qw-ckQHaHa?w=187&h=187&c=7&r=0&o=7" alt="Twerk Race 3D">
+          <h3>Twerk Race 3D</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Wordle.html'">
+          <img src="https://th.bing.com/th/id/OIP.NhkcU9EZ3tvwdVo6db0bgAHaHa?w=173&h=180&c=7&r=0&o=7" alt="Wordle">
+          <h3>Wordle</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/coreball.html'">
+          <img src="https://th.bing.com/th/id/OIP.pSaFRh5UZ-PZi9oqxGDZfgHaFj?w=213&h=180&c=7&r=0&o=7" alt="Core Ball">
+          <h3>Core Ball</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/crazycars.html'">
+          <img src="https://th.bing.com/th/id/OIP.9Y7-6QtaVAYoyrFFjzUbIgHaHa?w=179&h=180&c=7&r=0&o=7" alt="Crazy Cars">
+          <h3>Crazy Cars</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/snowrider.html'">
+          <img src="https://th.bing.com/th/id/OIP.HEucI3p7n0YYCVzhNm_VxgAAAA?w=152&h=180&c=7&r=0&o=7" alt="Snow Rider 3D">
+          <h3>Snow Rider 3D</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/CozyGolf.html'">
+          <img src="https://i.imgur.com/1FwIG8m_d.webp?maxwidth=760&fidelity=grand" alt="CozyGolf">
+          <h3>Cozy Golf <small>(Not Working)</small></h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/madden64.html'">
+          <img src="https://tse3.mm.bing.net/th/id/OIP.5zkP8SuHwTsaqw902v9MMgHaFI?w=264&h=182&c=7&r=0&o=7" alt="madden64">
+          <h3>Madden 64</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/trafficjam3d.html'">
+          <img src="https://th.bing.com/th/id/OIP.B4Z_VL6Af0CDW_fsd6XEJQHaDt?w=327&h=174&c=7&r=0&o=7" alt="Traffic Jam 3D">
+          <h3>Traffic Jam 3D</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/shrek2.html'">
+          <img src="https://tse2.mm.bing.net/th/id/OIP.7QbssIaRBRko9p_g6GPaKQHaHa?w=166&h=180&c=7&r=0&o=7" alt="shrek2">
+          <h3>Shrek 2</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Growden.io.html'">
+          <img src="https://tse3.mm.bing.net/th/id/OIP.YPqwQpuLpH9jWJLIHyFPigHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Growden">
+          <h3>Growden.io</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/99Nights.html'">
+          <img src="https://th.bing.com/th/id/OIP.A75lKs2UsoiL7GAEofMIAwHaEK?w=309&h=180&c=7&r=0&o=7" alt="99Nights">
+          <h3>99 Nights In A Forest</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/capybaraclicker.html'">
+          <img src="https://th.bing.com/th/id/OIP._yNwNBn69lZ6ZRdEB6BPIAHaD4?w=312&h=200&c=12&rs=1&o=6&pid=23.1" alt="Capybaraclicker">
+          <h3>Capybara Clicker</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/GrannyOnline.html'">
+          <img src="https://th.bing.com/th/id/OIP.GIeeOy3l0WRqKRsOQxOMeQHaD4?w=327&h=180&c=7&r=0&o=7" alt="GrannyOnline">
+          <h3>Granny ONLINE</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/SubwayMiami.html'">
+          <img src="https://th.bing.com/th/id/OIP.3R42Bb5kvmhye2v7dmprswHaEK?w=287&h=180&c=7&r=0&o=7" alt="SubMiami">
+          <h3>Subway Surfers Miami</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/BankRobbery2.html'">
+          <img src="https://th.bing.com/th/id/OIP.mrcQ0lI2QeiWcvI-KKajWgHaHa?w=172&h=180&c=7&r=0&o=7" alt="BankRobbery2">
+          <h3>Bank Robbery 2</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/PeoplePlayground.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/194.png" alt="PeoplePlayground">
+          <h3>People Playground</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Tomb.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/109.png" alt="Tomb">
+          <h3>Tomb Of The Mask</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/BrawlGuys.io.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/121.png" alt="BrawlGuys.io">
+          <h3>Brawl Guys.io</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Kindergarten.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/445.png" alt="Kindergarten">
+          <h3>Kindergarten 1</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Kindergarten2.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/446.png" alt="Kindergarten2">
+          <h3>Kindergarten 2</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/EXE.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/606.png" alt="EXE">
+          <h3>Sonic.Exe</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/DuckLife.html'">
+          <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/234.png" alt="DuckLife">
+          <h3>Duck Life</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Uphill Rush.html'">
+          <img src="https://th.bing.com/th/id/OIP.uZzx4x4ZAK2doT4ibkRihgHaHa?w=180&h=180&c=7&r=0&o=7" alt="Uphill Rush">
+          <h3>Uphill Rush</h3>
+        </div>
+        <div class="game-card" onclick="window.location.href='game.html?file=games/Ultimate Flash Sonic.html'">
+          <img src="https://th.bing.com/th/id/OIP.qoxpREZyP9x_RYB6nOa3WgHaEK?w=262&h=180&c=7&r=0&o=7" alt="Ultimate Flash Sonic">
+          <h3>Ultimate Flash Sonic</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Unblocked Games. Hosted on <a href="https://vercel.com" target="_blank" style="color: #9c27b0; text-decoration: none;">Vercel</a> • <a href="game.html?file=games/COMMENTS.html" style="color: #e040fb; text-decoration: none;">Suggest a Game</a></p>
+  </footer>
+
+  <script>
+    function openTab(tabName) {
+      const tabs = document.getElementsByClassName("tab-content");
+      const buttons = document.getElementsByClassName("tab-btn");
+      
+      for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove("active");
+      }
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+      }
+
+      document.getElementById(tabName).classList.add("active");
+      event.currentTarget.classList.add("active");
+    }
+  </script>
+</body>
+</html>
