@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/proxy/:path*", "destination": "https://www.crazygames.com/embed/:path*" }
+  ]
+}
