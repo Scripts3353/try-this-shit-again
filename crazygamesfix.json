@@ -3,6 +3,10 @@
     {
       "source": "/proxy/:path*",
       "destination": "https://www.crazygames.com/embed/:path*"
+    },
+    {
+      "source": "/proxy-game/:path*",
+      "destination": "https://www.crazygames.com/game/:path*"
     }
   ]
 }
