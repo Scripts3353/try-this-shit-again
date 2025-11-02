@@ -1,5 +1,12 @@
 {
   "rewrites": [
-    { "source": "/proxy/:path*", "destination": "https://www.crazygames.com/embed/:path*" }
+    {
+      "source": "/proxy/:path*",
+      "destination": "https://www.crazygames.com/embed/:path*"
+    },
+    {
+      "source": "/proxy/gulper-io",
+      "destination": "https://www.crazygames.com/embed/gulperio"
+    }
   ]
 }
