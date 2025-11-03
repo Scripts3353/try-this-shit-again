@@ -8,50 +8,94 @@
   <link rel="icon" href="data:,">
   <style>
     :root{
-      --p1:#6a1b9a; --p2:#4a148c; --p3:#7b1fa2; --pl:#9c27b0;
-      --txt:#e8eaf6; --card:rgba(255,255,255,.08); --card-hov:rgba(255,255,255,.15);
+      --p1:#0a0a0a; --p2:#1a1a1a; --p3:#2d2d2d; --pl:#555555;
+      --txt:#e8eaf6; --card:rgba(255,255,255,.06); --card-hov:rgba(255,255,255,.12);
     }
     *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;}
-    body{background:linear-gradient(135deg,var(--p1),var(--p2));color:var(--txt);min-height:100vh;background-attachment:fixed;}
-    header{text-align:center;padding:2rem 1rem;background:rgba(74,20,140,.4);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.1);}
-    h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#e040fb,#7c4dff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem;}
+    body{
+      background:linear-gradient(135deg,var(--p1),var(--p2));
+      color:var(--txt);min-height:100vh;background-attachment:fixed;
+    }
+    header{
+      text-align:center;padding:2rem 1rem;background:rgba(26,26,26,.4);
+      backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.1);
+    }
+    h1{
+      font-size:2.8rem;font-weight:700;
+      background:linear-gradient(to right,#bbbbbb,#888888);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem;
+    }
     .subtitle{font-size:1.1rem;opacity:.9;max-width:600px;margin:0 auto;}
     .container{max-width:1200px;margin:2rem auto;padding:0 1rem;}
     .tab-buttons{display:flex;justify-content:center;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
-    .tab-btn{background:rgba(255,255,255,.1);border:none;color:#fff;padding:.8rem 1.5rem;font-size:1rem;border-radius:50px;cursor:pointer;transition:all .3s;backdrop-filter:blur(5px);}
-    .tab-btn:hover,.tab-btn.active{background:var(--pl);transform:translateY(-2px);box-shadow:0 4px 15px rgba(156,39,176,.4);}
+    .tab-btn{
+      background:rgba(255,255,255,.08);border:none;color:#fff;padding:.8rem 1.5rem;
+      font-size:1rem;border-radius:50px;cursor:pointer;transition:all .3s;backdrop-filter:blur(5px);
+    }
+    .tab-btn:hover,.tab-btn.active{
+      background:var(--pl);transform:translateY(-2px);
+      box-shadow:0 4px 15px rgba(85,85,85,.4);
+    }
     .tab-content{display:none;}
-    .tab-content.active{display:block;animation:fadeIn .5s;}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-    .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem;padding:1rem 0;}
-    .game-card{background:var(--card);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);text-align:center;position:relative;}
-    .game-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(156,39,176,.2),transparent);opacity:0;transition:opacity .3s;pointer-events:none;}
+    .tab-content.active{display:block;}
+
+    /* ==== STAGGERED CARD ANIMATION ==== */
+    .game-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+      gap:1.5rem;padding:1rem 0;
+    }
+    .game-card{
+      background:var(--card);border-radius:16px;overflow:hidden;cursor:pointer;
+      transition:all .3s;backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.1);text-align:center;position:relative;
+      opacity:0; /* Start hidden */
+      transform:translateY(20px); /* Start lower */
+      animation:fadeInUp .6s ease-out forwards; /* Animate in */
+    }
+    .game-card::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(85,85,85,.2),transparent);
+      opacity:0;transition:opacity .3s;pointer-events:none;
+    }
     .game-card:hover::before{opacity:1;}
-    .game-card:hover{transform:translateY(-8px) scale(1.03);box-shadow:0 12px 25px rgba(0,0,0,.3);background:var(--card-hov);border-color:var(--pl);}
+    .game-card:hover{
+      transform:translateY(-8px) scale(1.03);
+      box-shadow:0 12px 25px rgba(0,0,0,.3);
+      background:var(--card-hov);border-color:var(--pl);
+    }
     .game-card img{width:100%;height:120px;object-fit:cover;border-bottom:1px solid rgba(255,255,255,.1);}
     .game-card h3{padding:.8rem .5rem 1rem;font-size:.95rem;font-weight:600;color:#fff;line-height:1.3;}
     .game-card h3 small{display:block;font-weight:400;font-size:.75rem;opacity:.7;margin-top:.2rem;}
-    footer{text-align:center;padding:2rem 1rem;margin-top:3rem;opacity:.8;font-size:.9rem;}
 
-    /* ---- MODAL ---- */
-    #gameModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:1rem;}
-    #gameModal.open{display:flex;}
-    .modal-content{position:relative;width:100%;max-width:1100px;height:90vh;background:#111;border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(156,39,176,.6);transition:all .3s ease;}
-    
-    /* FULLSCREEN MODE */
-    .modal-content.fullscreen{
-      position:fixed !important;
-      top:0 !important; left:0 !important; right:0 !important; bottom:0 !important;
-      width:100vw !important; height:100vh !important;
-      max-width:none !important; border-radius:0 !important;
-      z-index:99999;
+    /* Stagger animation */
+    @keyframes fadeInUp{
+      to{opacity:1;transform:translateY(0);}
     }
 
-    .modal-bar{display:flex;justify-content:flex-end;align-items:center;padding:.5rem 1rem;background:var(--p3);gap:.5rem;position:relative;z-index:10;}
-    .modal-bar button{background:rgba(255,255,255,.2);border:none;color:#fff;padding:.4rem .8rem;border-radius:6px;cursor:pointer;font-size:.9rem;transition:.2s;}
+    footer{text-align:center;padding:2rem 1rem;margin-top:3rem;opacity:.8;font-size:.9rem;}
+    #gameModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:1rem;}
+    #gameModal.open{display:flex;}
+    .modal-content{
+      position:relative;width:100%;max-width:1100px;height:90vh;
+      background:#111;border-radius:12px;overflow:hidden;
+      box-shadow:0 0 30px rgba(85,85,85,.6);transition:all .3s ease;
+    }
+    .modal-content.fullscreen{
+      position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
+      width:100vw !important;height:100vh !important;max-width:none !important;
+      border-radius:0 !important;z-index:99999;
+    }
+    .modal-bar{
+      display:flex;justify-content:flex-end;align-items:center;
+      padding:.5rem 1rem;background:var(--p3);gap:.5rem;position:relative;z-index:10;
+    }
+    .modal-bar button{
+      background:rgba(255,255,255,.2);border:none;color:#fff;
+      padding:.4rem .8rem;border-radius:6px;cursor:pointer;font-size:.9rem;transition:.2s;
+    }
     .modal-bar button:hover{background:var(--pl);}
     #gameFrame{flex:1;width:100%;height:calc(100% - 50px);border:none;background:#000;}
-
     @media(max-width:768px){
       h1{font-size:2.2rem;}
       .game-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;}
@@ -61,17 +105,16 @@
   </style>
 </head>
 <body>
-
   <header>
     <h1>Really Unbl0ck3d</h1>
     <p class="subtitle">Fixed Games and Revamped Site</p>
   </header>
-
   <div class="container">
     <div class="tab-buttons">
       <button class="tab-btn active" onclick="openTab('games')">All Games</button>
     </div>
-
+    <div id="games" class="tab-content active">
+      <div class="game-grid">
     <!-- ==== GAMES TAB ==== -->
     <div id="games" class="tab-content active">
       <div class="game-grid">
@@ -277,10 +320,6 @@
           <img src="https://i.imgur.com/o2BTJsW.png" alt="craft">
           <h3>Infinite Craft</h3>
         </div>
-<div class="game-card" data-game="/proxy-miniplay/gulper-io">
-  <img src="https://www.miniplay.com/thumbs/gulper-io.png" alt="Gulper.io">
-  <h3>Gulper.io</h3>
-</div>
 
         
 
@@ -292,7 +331,6 @@
     <p>Hosted on <a href="https://vercel.com" target="_blank" style="color:#9c27b0;text-decoration:none;">Vercel</a> • <a href="#" onclick="openGame('games/COMMENTS.html');return false;" style="color:#e040fb;text-decoration:none;">Suggest a Game</a></p>
   </footer>
 
-  <!-- ==== MODAL ==== -->
   <div id="gameModal">
     <div class="modal-content" id="modalContent">
       <div class="modal-bar">
@@ -304,53 +342,48 @@
   </div>
 
   <script>
-    // Elements
     const modal = document.getElementById('gameModal');
     const modalContent = document.getElementById('modalContent');
     const frame = document.getElementById('gameFrame');
     const closeBtn = document.getElementById('closeBtn');
     const fsBtn = document.getElementById('fsBtn');
 
-    // Open game
     function openGame(path) {
       frame.src = path;
       modal.classList.add('open');
       modalContent.classList.remove('fullscreen');
     }
-
-    // Close modal
     function closeGame() {
       modal.classList.remove('open');
       frame.src = '';
       modalContent.classList.remove('fullscreen');
     }
-
-    // Toggle custom fullscreen (not browser fullscreen)
     function toggleCustomFullscreen() {
       modalContent.classList.toggle('fullscreen');
       fsBtn.textContent = modalContent.classList.contains('fullscreen') ? 'Exit Fullscreen' : 'Fullscreen';
     }
 
-    // Click handlers
     document.querySelectorAll('.game-card').forEach(card => {
       card.addEventListener('click', () => openGame(card.dataset.game));
     });
-
     closeBtn.onclick = closeGame;
     fsBtn.onclick = toggleCustomFullscreen;
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGame(); });
 
-    // ESC to close
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeGame();
-    });
-
-    // Tab handling
     function openTab(name) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(name).classList.add('active');
       event.target.classList.add('active');
     }
+
+    // ==== STAGGERED CARD ANIMATION ON LOAD ====
+    document.addEventListener("DOMContentLoaded", () => {
+      const cards = document.querySelectorAll('.game-card');
+      cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.08}s`; // 80ms delay per card
+      });
+    });
   </script>
 </body>
 </html>
