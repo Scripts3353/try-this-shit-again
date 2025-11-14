@@ -71,8 +71,6 @@
     .game-card img{width:100%;height:120px;object-fit:cover;border-bottom:1px solid rgba(255,255,255,.1);}
     .game-card h3{padding:.8rem .5rem 1rem;font-size:.95rem;font-weight:600;color:#fff;line-height:1.3;}
 
-    @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
-
     /* ==== PARTNERS GRID ==== */
     .partner-grid{
       display:grid;
@@ -117,6 +115,81 @@
       background:var(--card-hov);
     }
 
+    /* ==== YOUTUBE CHANNELS ==== */
+    .yt-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+      gap:1.5rem;
+      padding:1rem 0;
+    }
+    .yt-channel-card{
+      background:var(--card);border-radius:16px;overflow:hidden;
+      display:flex;align-items:center;cursor:pointer;
+      border:1px solid rgba(255,255,255,.1);
+      opacity:0; transform:translateY(20px); display:none;
+      transition:transform .3s,box-shadow .3s,background .3s;
+      backdrop-filter:blur(10px);
+    }
+    .yt-channel-card.visible{
+      display:flex;
+      animation:fadeInUp .6s ease-out forwards;
+    }
+    .yt-channel-card img{
+      width:80px;height:80px;border-radius:50%;margin:1rem;
+      border:2px solid rgba(255,255,255,.2);
+    }
+    .yt-info{
+      flex:1;padding-right:1rem;
+    }
+    .yt-info h3{
+      font-size:1.1rem;font-weight:600;color:#fff;margin:0 0 .3rem;
+    }
+    .yt-info p{
+      font-size:.85rem;opacity:.8;margin:0;
+      line-height:1.4;
+    }
+    .yt-channel-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 10px 20px rgba(0,0,0,.3);
+      background:var(--card-hov);
+    }
+
+    /* ==== YOUTUBE MODAL ==== */
+    #ytModal{
+      display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;padding:1rem;
+      flex-direction:column;
+    }
+    #ytModal.open{display:flex;}
+    .yt-modal-header{
+      width:100%;max-width:1100px;display:flex;justify-content:space-between;
+      align-items:center;margin-bottom:1rem;color:#fff;
+    }
+    .yt-modal-header h2{font-size:1.8rem;font-weight:600;}
+    .yt-close-btn{
+      background:rgba(255,255,255,.2);border:none;color:#fff;
+      padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-size:1rem;
+    }
+    .yt-close-btn:hover{background:var(--pl);}
+    .yt-video-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+      gap:1rem;width:100%;max-width:1100px;max-height:80vh;overflow-y:auto;padding:1rem;
+      background:#111;border-radius:12px;
+    }
+    .yt-video-item{
+      background:#1a1a1a;border-radius:12px;overflow:hidden;cursor:pointer;
+      transition:transform .2s;
+    }
+    .yt-video-item:hover{transform:scale(1.03);}
+    .yt-video-item img{width:100%;height:170px;object-fit:cover;}
+    .yt-video-item h4{
+      padding:.8rem;font-size:.95rem;color:#fff;line-height:1.3;
+      white-space:normal;overflow:hidden;text-overflow:ellipsis;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    }
+
+    @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
+
     footer{text-align:center;padding:2rem 1rem;margin-top:3rem;opacity:.8;font-size:.9rem;}
     #gameModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;
       background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:1rem;}
@@ -146,8 +219,11 @@
       h1{font-size:2.2rem;}
       .game-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;}
       .game-card h3{font-size:.85rem;}
-      .partner-grid{grid-template-columns:1fr;}
+      .partner-grid,.yt-grid{grid-template-columns:1fr;}
       .partner-card img{width:80px;height:80px;}
+      .yt-channel-card img{width:60px;height:60px;}
+      .yt-modal-header h2{font-size:1.5rem;}
+      .yt-video-grid{grid-template-columns:1fr;}
       .modal-content{height:95vh;}
     }
   </style>
@@ -155,14 +231,14 @@
 <body>
   <header>
     <h1>Really Unbl0ck3d</h1>
-    <p class="subtitle">I'M SICK AND YOUR NOT 😔</p>
+    <p class="subtitle">what do i put here</p>
   </header>
 
   <div class="container">
     <!-- TAB BUTTONS -->
     <div class="tab-buttons">
       <button class="tab-btn active" onclick="openTab('games')">All Games</button>
-      <button class="tab-btn" onclick="openTab('partners')">Partners</button>
+      <button class="tab-btn" onclick="openTab('youtube')">YouTube</button>
     </div>
 
     <!-- GAMES TAB -->
@@ -399,16 +475,34 @@
     <!-- PARTNERS TAB -->
     <div id="partners" class="tab-content">
       <div class="partner-grid">
-        <!-- ADD YOUR PARTNERS HERE -->
-        <div class="partner-card">
-          <img src="https://i.imgur.com/4jzG4jq.png" alt="Partner 1">
-          <div class="partner-info">
-            <h3>SIGMA BM FREE</h3>
-            <a href="https://sites.google.com/lscsd.org/sigmabm-free/home" target="_blank" class="visit-btn">Visit</a>
+        <!-- [YOUR PARTNERS] -->
+      </div>
+    </div>
+
+    <!-- YOUTUBE TAB -->
+    <div id="youtube" class="tab-content">
+      <div class="yt-grid">
+        <!-- YOUTUBE CHANNEL CARD -->
+        <div class="yt-channel-card" onclick="openYTChannel('MrBeast')">
+          <img src="https://yt3.ggpht.com/ytc/AIdro_lK1wU8H1z0.html" alt="MrBeast">
+          <div class="yt-info">
+            <h3>MrBeast</h3>
+            <p>@MrBeast • 450M subscribers • 913 videos<br>
+               <span style="color:#00bfff;">teamwater.org</span> and 3 more links
+            </p>
           </div>
         </div>
 
-        <!-- Add more like this -->
+        <!-- ADD MORE CHANNELS LIKE THIS -->
+        <!--
+        <div class="yt-channel-card" onclick="openYTChannel('PewDiePie')">
+          <img src="PEWDIEPIE_PFP_URL" alt="PewDiePie">
+          <div class="yt-info">
+            <h3>PewDiePie</h3>
+            <p>@PewDiePie • 111M subs • 4.7K videos</p>
+          </div>
+        </div>
+        -->
       </div>
     </div>
   </div>
@@ -417,7 +511,7 @@
     <p>Hosted on <a href="https://vercel.com" target="_blank" style="color:#9c27b0;text-decoration:none;">Vercel</a> • <a href="#" onclick="openGame('games/COMMENTS.html');return false;" style="color:#e040fb;text-decoration:none;">Suggest a Game</a></p>
   </footer>
 
-  <!-- MODAL -->
+  <!-- GAME MODAL -->
   <div id="gameModal">
     <div class="modal-content" id="modalContent">
       <div class="modal-bar">
@@ -428,7 +522,19 @@
     </div>
   </div>
 
+  <!-- YOUTUBE MODAL -->
+  <div id="ytModal">
+    <div class="yt-modal-header">
+      <h2 id="ytChannelName">Channel Videos</h2>
+      <button class="yt-close-btn" onclick="closeYTModal()">Close</button>
+    </div>
+    <div class="yt-video-grid" id="ytVideoGrid">
+      <!-- Videos injected by JS -->
+    </div>
+  </div>
+
   <script>
+    // Game Modal
     const modal = document.getElementById('gameModal');
     const modalContent = document.getElementById('modalContent');
     const frame = document.getElementById('gameFrame');
@@ -457,6 +563,7 @@
     fsBtn.onclick = toggleCustomFullscreen;
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGame(); });
 
+    // Tab System
     function openTab(name) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -464,12 +571,59 @@
       document.querySelector(`.tab-btn[onclick="openTab('${name}')"]`).classList.add('active');
     }
 
-    // STAGGERED ANIMATION FOR BOTH GAMES & PARTNERS
+    // YouTube Modal
+    const ytModal = document.getElementById('ytModal');
+    const ytChannelName = document.getElementById('ytChannelName');
+    const ytVideoGrid = document.getElementById('ytVideoGrid');
+
+    function openYTChannel(channel) {
+      ytChannelName.textContent = channel + "'s Videos";
+      ytVideoGrid.innerHTML = ''; // Clear
+
+      // === SAMPLE VIDEOS (Replace with real data) ===
+      const videos = {
+        'MrBeast': [
+          { title: "I Spent 50 Hours Buried Alive", id: "9bqk6ZUsKyA", thumb: "https://i.ytimg.com/vi/9bqk6ZUsKyA/maxresdefault.jpg" },
+          { title: "Last To Leave Circle Wins $500,000", id: "X7w81YpM8hA", thumb: "https://i.ytimg.com/vi/X7w8YpM8hA/maxresdefault.jpg" },
+          { title: "Ages 1 - 100 Decide Who Wins $250,000", id: "dQw4w9WgXcQ", thumb: "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" }
+        ]
+        // Add more channels...
+      };
+
+      const channelVideos = videos[channel] || [];
+      channelVideos.forEach(v => {
+        const div = document.createElement('div');
+        div.className = 'yt-video-item';
+        div.innerHTML = `
+          <img src="${v.thumb}" alt="${v.title}">
+          <h4>${v.title}</h4>
+        `;
+        div.onclick = () => {
+          const embed = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${v.id}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
+          ytVideoGrid.innerHTML = `<div style="grid-column:1/-1;background:#000;border-radius:12px;overflow:hidden;">${embed}</div>`;
+        };
+        ytVideoGrid.appendChild(div);
+      });
+
+      ytModal.classList.add('open');
+    }
+
+    function closeYTModal() {
+      ytModal.classList.remove('open');
+      ytVideoGrid.innerHTML = '';
+    }
+
+    // Close YT modal on click outside
+    ytModal.addEventListener('click', e => {
+      if (e.target === ytModal) closeYTModal();
+    });
+
+    // Staggered Animation
     document.addEventListener("DOMContentLoaded", () => {
-      const cards = document.querySelectorAll('.game-card, .partner-card');
+      const cards = document.querySelectorAll('.game-card, .partner-card, .yt-channel-card');
       cards.forEach((card, index) => {
         setTimeout(() => {
-          card.style.display = card.classList.contains('partner-card') ? 'flex' : 'block';
+          card.style.display = card.classList.contains('partner-card') || card.classList.contains('yt-channel-card') ? 'flex' : 'block';
           card.classList.add('visible');
         }, index * 80);
       });
