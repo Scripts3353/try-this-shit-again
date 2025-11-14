@@ -487,19 +487,15 @@
           <img src="https://yt3.ggpht.com/ytc/AIdro_lK1wU8H1z0.html" alt="MrBeast">
           <div class="yt-info">
             <h3>MrBeast</h3>
-            <p>@MrBeast • 450M subscribers • 913 videos<br>
-               <span style="color:#00bfff;">teamwater.org</span> and 3 more links
             </p>
           </div>
         </div>
 
-        <!-- ADD MORE CHANNELS LIKE THIS -->
-        <!--
-        <div class="yt-channel-card" onclick="openYTChannel('PewDiePie')">
-          <img src="PEWDIEPIE_PFP_URL" alt="PewDiePie">
+        <div class="yt-channel-card" onclick="openYTChannel('NFL')">
+          <img src="https://i.imgur.com/MWukVFf.jpeg" alt="NFL">
           <div class="yt-info">
-            <h3>PewDiePie</h3>
-            <p>@PewDiePie • 111M subs • 4.7K videos</p>
+            <h3>NFL</h3>
+            <p>@NFL • 15.6M </p>
           </div>
         </div>
         -->
@@ -513,7 +509,7 @@
 
   <!-- GAME MODAL -->
   <div id="gameModal">
-    <div class="modal-content" id="modalContent">
+    <div class="modal-content" id="modalContent" allowfullscreen>
       <div class="modal-bar">
         <button id="fsBtn">Fullscreen</button>
         <button id="closeBtn">Close</button>
@@ -533,101 +529,115 @@
     </div>
   </div>
 
-  <script>
-    // Game Modal
-    const modal = document.getElementById('gameModal');
-    const modalContent = document.getElementById('modalContent');
-    const frame = document.getElementById('gameFrame');
-    const closeBtn = document.getElementById('closeBtn');
-    const fsBtn = document.getElementById('fsBtn');
+ <script>
+  const modal = document.getElementById('gameModal');
+  const modalContent = document.getElementById('modalContent');
+  const frame = document.getElementById('gameFrame');
+  const closeBtn = document.getElementById('closeBtn');
+  const fsBtn = document.getElementById('fsBtn');
 
-    function openGame(path) {
-      frame.src = path;
-      modal.classList.add('open');
-      modalContent.classList.remove('fullscreen');
+  function openGame(path) {
+    frame.src = path;
+    modal.classList.add('open');
+  }
+
+  function closeGame() {
+    modal.classList.remove('open');
+    frame.src = '';
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
     }
-    function closeGame() {
-      modal.classList.remove('open');
-      frame.src = '';
-      modalContent.classList.remove('fullscreen');
+  }
+
+  // TRUE FULLSCREEN (Browser-level)
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      modalContent.requestFullscreen().catch(err => {
+        console.error("Fullscreen failed:", err);
+      });
+      fsBtn.textContent = 'Exit Fullscreen';
+    } else {
+      document.exitFullscreen();
     }
-    function toggleCustomFullscreen() {
-      modalContent.classList.toggle('fullscreen');
-      fsBtn.textContent = modalContent.classList.contains('fullscreen') ? 'Exit Fullscreen' : 'Fullscreen';
+  }
+
+  // Update button when exiting fullscreen
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+      fsBtn.textContent = 'Fullscreen';
     }
+  });
 
-    document.querySelectorAll('.game-card').forEach(card => {
-      card.addEventListener('click', () => openGame(card.dataset.game));
-    });
-    closeBtn.onclick = closeGame;
-    fsBtn.onclick = toggleCustomFullscreen;
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGame(); });
+  document.querySelectorAll('.game-card').forEach(card => {
+    card.addEventListener('click', () => openGame(card.dataset.game));
+  });
 
-    // Tab System
-    function openTab(name) {
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(name).classList.add('active');
-      document.querySelector(`.tab-btn[onclick="openTab('${name}')"]`).classList.add('active');
+  closeBtn.onclick = closeGame;
+  fsBtn.onclick = toggleFullscreen;
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeGame();
     }
+  });
 
-    // YouTube Modal
-    const ytModal = document.getElementById('ytModal');
-    const ytChannelName = document.getElementById('ytChannelName');
-    const ytVideoGrid = document.getElementById('ytVideoGrid');
+  function openTab(name) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(name).classList.add('active');
+    document.querySelector(`.tab-btn[onclick="openTab('${name}')"]`).classList.add('active');
+  }
 
-    function openYTChannel(channel) {
-      ytChannelName.textContent = channel + "'s Videos";
-      ytVideoGrid.innerHTML = ''; // Clear
+  // YouTube Modal (unchanged)
+  const ytModal = document.getElementById('ytModal');
+  const ytChannelName = document.getElementById('ytChannelName');
+  const ytVideoGrid = document.getElementById('ytVideoGrid');
 
-      // === SAMPLE VIDEOS (Replace with real data) ===
-      const videos = {
-        'MrBeast': [
-          { title: "I Spent 50 Hours Buried Alive", id: "9bqk6ZUsKyA", thumb: "https://i.ytimg.com/vi/9bqk6ZUsKyA/maxresdefault.jpg" },
-          { title: "Last To Leave Circle Wins $500,000", id: "X7w81YpM8hA", thumb: "https://i.ytimg.com/vi/X7w8YpM8hA/maxresdefault.jpg" },
-          { title: "Ages 1 - 100 Decide Who Wins $250,000", id: "dQw4w9WgXcQ", thumb: "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" }
-        ]
-        // Add more channels...
+  function openYTChannel(channel) {
+    ytChannelName.textContent = channel + "'s Videos";
+    ytVideoGrid.innerHTML = '';
+
+    const videos = {
+      'MrBeast': [
+        { title: "I Spent 50 Hours Buried Alive", id: "9bqk6ZUsKyA", thumb: "https://i.ytimg.com/vi/9bqk6ZUsKyA/maxresdefault.jpg" },
+      ],
+      'NFL': [
+        { title: "Lamar Jackson Back to Practice, Week 11 Preview, & Fantasy Starts + Sits", id: "eJ_Seh08zYw", thumb: "https://i.ytimg.com/vi/eJ_Seh08zYw/maxresdefault.jpg" },
+      ]
+    };
+
+    const channelVideos = videos[channel] || [];
+    channelVideos.forEach(v => {
+      const div = document.createElement('div');
+      div.className = 'yt-video-item';
+      div.innerHTML = `<img src="${v.thumb}" alt="${v.title}"><h4>${v.title}</h4>`;
+      div.onclick = () => {
+        const embed = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${v.id}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
+        ytVideoGrid.innerHTML = `<div style="grid-column:1/-1;background:#000;border-radius:12px;overflow:hidden;">${embed}</div>`;
       };
-
-      const channelVideos = videos[channel] || [];
-      channelVideos.forEach(v => {
-        const div = document.createElement('div');
-        div.className = 'yt-video-item';
-        div.innerHTML = `
-          <img src="${v.thumb}" alt="${v.title}">
-          <h4>${v.title}</h4>
-        `;
-        div.onclick = () => {
-          const embed = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${v.id}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
-          ytVideoGrid.innerHTML = `<div style="grid-column:1/-1;background:#000;border-radius:12px;overflow:hidden;">${embed}</div>`;
-        };
-        ytVideoGrid.appendChild(div);
-      });
-
-      ytModal.classList.add('open');
-    }
-
-    function closeYTModal() {
-      ytModal.classList.remove('open');
-      ytVideoGrid.innerHTML = '';
-    }
-
-    // Close YT modal on click outside
-    ytModal.addEventListener('click', e => {
-      if (e.target === ytModal) closeYTModal();
+      ytVideoGrid.appendChild(div);
     });
 
-    // Staggered Animation
-    document.addEventListener("DOMContentLoaded", () => {
-      const cards = document.querySelectorAll('.game-card, .partner-card, .yt-channel-card');
-      cards.forEach((card, index) => {
-        setTimeout(() => {
-          card.style.display = card.classList.contains('partner-card') || card.classList.contains('yt-channel-card') ? 'flex' : 'block';
-          card.classList.add('visible');
-        }, index * 80);
-      });
+    ytModal.classList.add('open');
+  }
+
+  function closeYTModal() {
+    ytModal.classList.remove('open');
+    ytVideoGrid.innerHTML = '';
+  }
+
+  ytModal.addEventListener('click', e => { if (e.target === ytModal) closeYTModal(); });
+
+  // Staggered Animation
+  document.addEventListener("DOMContentLoaded", () => {
+    const cards = document.querySelectorAll('.game-card, .partner-card, .yt-channel-card');
+    cards.forEach((card, index) => {
+      setTimeout(() => {
+        card.style.display = card.classList.contains('partner-card') || card.classList.contains('yt-channel-card') ? 'flex' : 'block';
+        card.classList.add('visible');
+      }, index * 80);
     });
-  </script>
+  });
+</script>
 </body>
 </html>
