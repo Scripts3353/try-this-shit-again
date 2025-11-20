@@ -43,38 +43,46 @@
     #settingsBtn{position:fixed;top:1rem;right:1rem;z-index:9998;cursor:pointer;}
     #settingsBtn svg{stroke:#aaa;transition:.2s;}
     #settingsBtn:hover svg{stroke:#fff;transform:scale(1.1);}
-    #settingsMenu{display:none;position:fixed;top:4.5rem;right:1rem;width:300px;background:var(--p2);border:1px solid rgba(255,255,255,255,.1);border-radius:16px;padding:1.2rem;z-index:9997;backdrop-filter:blur(12px);box-shadow:0 12px 30px rgba(0,0,0,.5);}
+    #settingsMenu{display:none;position:fixed;top:4.5rem;right:1rem;width:320px;background:var(--p2);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.2rem;z-index:9997;backdrop-filter:blur(12px);box-shadow:0 12px 30px rgba(0,0,0,.5);}
     #settingsMenu button{width:100%;padding:.9rem;margin:.5rem 0;background:var(--card);border:none;color:#fff;border-radius:12px;cursor:pointer;transition:.25s;font-weight:500;}
     #settingsMenu button:hover{background:var(--card-hov);}
     #adminSection{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.1);}
-    #adminControls input,#adminControls textarea,#adminControls button{width:100%;padding:.8rem;margin:.4rem 0;border-radius:12px;border:none;outline:none;}
-    #adminControls input,#adminControls textarea{background:#333;color:#fff;}
-    #adminControls button{background:#9f00ff;color:#fff;font-weight:bold;cursor:pointer;}
-    #adminControls button:hover{background:#c300ff;}
+    #adminControls input,#adminControls textarea{width:100%;padding:.8rem;margin:.4rem 0;border-radius:12px;background:#333;color:#fff;border:none;outline:none;}
+    #adminControls button{margin-top:.6rem;background:#9f00ff !important;color:#fff;font-weight:bold;}
+    #adminControls button:hover{background:#c300ff !important;}
 
     /* PURPLE ALERT */
-    #globalAlert{
-      display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);
-      background:#9f00ff;color:#fff;padding:1rem 2.5rem;border-radius:16px;
-      z-index:9999999;box-shadow:0 10px 30px rgba(159,0,255,0.4);
-      font-size:1.1rem;font-weight:600;text-align:center;min-width:300px;
-      backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,0.2);
-      animation:slideDown 0.5s ease, fadeOut 1s ease 7s forwards;
-    }
+    #globalAlert{display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#9f00ff;color:#fff;padding:1rem 2.5rem;border-radius:16px;z-index:9999999;box-shadow:0 10px 30px rgba(159,0,255,0.4);font-size:1.1rem;font-weight:600;text-align:center;min-width:300px;backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,0.2);animation:slideDown .5s ease,fadeOut 1s ease 7s forwards;}
     @keyframes slideDown{from{top:-100px;opacity:0;}to{top:20px;opacity:1;}}
     @keyframes fadeOut{to{opacity:0;transform:translateX(-50%) translateY(-20px);}}
 
-    @media(max-width:768px){h1{font-size:2.2rem;}}
+    /* SITE LOCK SCREEN */
+    #siteLockOverlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0a0a0a;z-index:99999999;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-family:Segoe UI,sans-serif;}
+    #siteLockOverlay h1{font-size:3.8rem;margin-bottom:1rem;background:linear-gradient(to right,#ff5555,#ff00aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    #siteLockOverlay h2{font-size:2.2rem;opacity:.9;}
+    #unlockPass{padding:1rem 1.5rem;font-size:1.2rem;border-radius:12px;border:none;background:#333;color:#fff;width:320px;text-align:center;margin-top:2rem;}
   </style>
 </head>
 <body>
+
+  <!-- SITE LOCK OVERLAY (Be Right Back) -->
+  <div id="siteLockOverlay">
+    <h1>Really Unbl0ck3d</h1>
+    <h2>Be right back...</h2>
+    <div>
+      <input type="password" id="unlockPass" placeholder="Admin password to unlock">
+      <button onclick="if(document.getElementById('unlockPass').value==='lukas')document.getElementById('siteLockOverlay').style.display='none';else alert('Wrong password!')" style="margin-top:1rem;padding:1rem 2rem;background:#9f00ff;color:#fff;border:none;border-radius:12px;font-size:1.2rem;cursor:pointer;">
+        Unlock Site
+      </button>
+    </div>
+  </div>
 
   <!-- SETTINGS BUTTON -->
   <div id="settingsBtn">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
   </div>
 
-  <!-- SETTINGS MENU (Admin is inside here now) -->
+  <!-- SETTINGS MENU + ADMIN PANEL -->
   <div id="settingsMenu">
     <h3 style="color:#fff;text-align:center;margin-bottom:1rem;">Settings</h3>
     <button id="disguiseBtn">Disguise as Google Classroom</button>
@@ -94,8 +102,11 @@
       <button onclick="updateHeader()">Update Header (Live)</button>
       <textarea id="alertInput" placeholder="Alert message..." rows="2"></textarea>
       <button onclick="sendAlert()">Send Global Alert</button>
-      <button onclick="forceExitFullscreen()" style="background:#ff4444;margin-top:.8rem;">
+      <button onclick="forceExitFullscreen()" style="background:#ff4444 !important;margin-top:.8rem;">
         Force Exit Fullscreen (Everyone)
+      </button>
+      <button id="disableSiteBtn" onclick="toggleSiteLock()" style="background:#ff2d2d !important;margin-top:.8rem;">
+        Disable Site: <span id="lockStatus">OFF</span>
       </button>
     </div>
   </div>
@@ -111,12 +122,10 @@
 
   <div class="container">
     <div class="tab-buttons">
-      <button class="tab-btn active" onclick="document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.getElementById('games').classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">
-        All Games
-      </button>
+      <button class="tab-btn active">All Games</button>
     </div>
 
-      <!-- GAMES TAB -->
+         <!-- GAMES TAB -->
     <div id="games" class="tab-content active">
       <div class="game-grid">
         <!-- ALL YOUR GAME CARDS -->
@@ -411,37 +420,30 @@
     // Live subtitle
     db.ref("site/subtitle").on("value", s => document.getElementById("liveSubtitle").textContent = s.val() || "I think this is gonna be better than sigmabm");
 
-        // ALERTS — SHOW ONLY ONCE PER USER (NO MORE SPAM ON REFRESH)
+    // Purple alert — only once per user
     db.ref("alert").on("value", snap => {
-      const alertData = snap.val();
-      if (!alertData || !alertData.message) return;
-
-      // Generate a unique ID for this alert using timestamp + message
-      const alertId = btoa(alertData.message + (alertData.timestamp || ""));
-
-      // Check if user already saw this exact alert
-      if (localStorage.getItem("seenAlert_" + alertId)) return;
-
-      // Show the purple alert
+      const a = snap.val();
+      if (!a?.message) return;
+      const alertId = btoa(a.message + a.timestamp);
+      if (localStorage.getItem("seen_" + alertId)) return;
       const div = document.getElementById("globalAlert");
-      div.textContent = alertData.message;
+      div.textContent = a.message;
       div.style.display = "block";
+      localStorage.setItem("seen_" + alertId, "true");
+      setTimeout(() => div.style.display = "none", 8000);
+    });
 
-      // Mark as seen so it won't show again
-      localStorage.setItem("seenAlert_" + alertId, "true");
-
-      // Auto-hide after 8 seconds
-      setTimeout(() => {
-        div.style.display = "none";
-      }, 8000);
+    // Site lock
+    db.ref("siteLock").on("value", s => {
+      const locked = s.val() === true;
+      document.getElementById("siteLockOverlay").style.display = locked ? "flex" : "none";
+      if (locked && document.fullscreenElement) document.exitFullscreen();
     });
 
     // Force exit fullscreen
-    db.ref("adminCommands/exitFullscreen").on("value", snap => {
-      if (snap.val()) {
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-          document.exitFullscreen?.() || document.webkitExitFullscreen?.();
-        }
+    db.ref("adminCommands/exitFullscreen").on("value", s => {
+      if (s.val()) {
+        if (document.fullscreenElement) document.exitFullscreen();
         db.ref("adminCommands/exitFullscreen").remove();
       }
     });
@@ -456,25 +458,23 @@
     function sendAlert() {
       const msg = document.getElementById("alertInput").value.trim();
       if (!msg) return alert("Write a message!");
-      db.ref("alert").set({message: msg, duration: 10000});
+      db.ref("alert").set({message: msg, timestamp: Date.now()});
       document.getElementById("alertInput").value = "";
     }
     function forceExitFullscreen() {
-      if (confirm("Force exit fullscreen for EVERYONE?")) {
-        db.ref("adminCommands/exitFullscreen").set({timestamp: Date.now()});
+      if (confirm("Force exit fullscreen for everyone?")) {
+        db.ref("adminCommands/exitFullscreen").set({ts: Date.now()});
       }
     }
+    function toggleSiteLock() {
+      const newState = !(document.getElementById("lockStatus").textContent === "ON");
+      db.ref("siteLock").set(newState);
+      document.getElementById("lockStatus").textContent = newState ? "ON" : "OFF";
+    }
 
-    // Settings menu toggle
-    document.getElementById("settingsBtn").onclick = e => {
-      e.stopPropagation();
-      const m = document.getElementById("settingsMenu");
-      m.style.display = m.style.display === "block" ? "none" : "block";
-    };
-    document.addEventListener("click", e => {
-      if (!document.getElementById("settingsBtn").contains(e.target) && !document.getElementById("settingsMenu").contains(e.target))
-        document.getElementById("settingsMenu").style.display = "none";
-    });
+    // Settings menu
+    document.getElementById("settingsBtn").onclick = e => { e.stopPropagation(); const m = document.getElementById("settingsMenu"); m.style.display = m.style.display === "block" ? "none" : "block"; };
+    document.addEventListener("click", e => { if (!e.target.closest("#settingsBtn") && !e.target.closest("#settingsMenu")) document.getElementById("settingsMenu").style.display = "none"; });
 
     // Disguise & Theme
     let disguised = false;
@@ -482,35 +482,30 @@
       disguised = !disguised;
       document.title = disguised ? "Google Classroom" : "Really Unbl0ck3d";
       const link = document.querySelector("link[rel*='icon']") || document.createElement("link");
-      link.rel = "icon";
-      link.href = disguised ? "https://www.google.com/images/branding/product/2x/classroom_48dp.png" : "data:,";
-      if (!disguised) document.head.removeChild(link); else document.head.appendChild(link);
+      link.rel = "icon"; link.href = disguised ? "https://www.google.com/images/branding/product/2x/classroom_48dp.png" : "data:,";
+      if (disguised) document.head.appendChild(link); else document.head.querySelector("link[rel*='icon']").remove();
     };
     let purple = false;
     document.getElementById("themeBtn").onclick = () => {
       purple = !purple;
-      document.documentElement.style.setProperty('--p1', purple ? '#1a0033' : '#0a0a0a');
-      document.documentElement.style.setProperty('--p2', purple ? '#2d004d' : '#1a1a1a');
-      document.documentElement.style.setProperty('--p3', purple ? '#400066' : '#2d2d2d');
-      document.documentElement.style.setProperty('--pl', purple ? '#9f00ff' : '#555555');
+      const r = document.documentElement.style;
+      r.setProperty('--p1', purple ? '#1a0033' : '#0a0a0a');
+      r.setProperty('--p2', purple ? '#2d004d' : '#1a1a1a');
+      r.setProperty('--p3', purple ? '#400066' : '#2d2d2d');
+      r.setProperty('--pl', purple ? '#9f00ff' : '#555555');
       document.getElementById("themeStatus").textContent = purple ? "On" : "Off";
     };
 
-    // Game modal
+    // Games
     document.querySelectorAll(".game-card").forEach(c => c.onclick = () => {
       document.getElementById("gameFrame").src = c.dataset.game;
       document.getElementById("gameModal").classList.add("open");
     });
-    document.getElementById("closeBtn").onclick = () => {
-      document.getElementById("gameModal").classList.remove("open");
-      document.getElementById("gameFrame").src = "";
-    };
+    document.getElementById("closeBtn").onclick = () => { document.getElementById("gameModal").classList.remove("open"); document.getElementById("gameFrame").src = ""; };
     document.getElementById("fsBtn").onclick = () => document.getElementById("modalContent").requestFullscreen();
 
     // Card animation
-    document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll(".game-card").forEach((c,i) => setTimeout(() => c.classList.add("visible"), i*50));
-    });
+    document.addEventListener("DOMContentLoaded", () => document.querySelectorAll(".game-card").forEach((c,i) => setTimeout(() => c.classList.add("visible"), i*40)));
   </script>
 </body>
 </html>
