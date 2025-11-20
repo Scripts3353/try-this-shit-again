@@ -486,7 +486,7 @@ window.addEventListener("load", () => { if (localStorage.getItem("siteUnlocked")
 
 db.ref("adminCommands/exitFullscreen").on("value", s => { if (s.val()) { if (document.fullscreenElement) document.exitFullscreen(); db.ref("adminCommands/exitFullscreen").remove(); } });
 
-function loginAdmin() { if (document.getElementById("adminPass").value === "lukas") { document.getElementById("adminSection").style.display = "none"; document.getElementById("adminControls").style.display = "block"; } else alert("Wrong password!"); }
+function loginAdmin() { if (document.getElementById("adminPass").value === "aolzn5kids!") { document.getElementById("adminSection").style.display = "none"; document.getElementById("adminControls").style.display = "block"; } else alert("Wrong password!"); }
 function updateHeader() { db.ref("site/subtitle").set(document.getElementById("headerInput").value || "I think this is gonna be better than sigmabm"); }
 function sendAlert() { const msg = document.getElementById("alertInput").value.trim(); if (!msg) return alert("Write a message!"); db.ref("alert").set({message: msg, timestamp: Date.now()}); document.getElementById("alertInput").value = ""; }
 function forceExitFullscreen() { if (confirm("Force exit fullscreen?")) db.ref("adminCommands/exitFullscreen").set({ts: Date.now()}); }
