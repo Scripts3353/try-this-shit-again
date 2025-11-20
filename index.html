@@ -411,15 +411,29 @@
     // Live subtitle
     db.ref("site/subtitle").on("value", s => document.getElementById("liveSubtitle").textContent = s.val() || "I think this is gonna be better than sigmabm");
 
-    // Purple alert with fade
-    db.ref("alert").on("value", s => {
-      const a = s.val();
+        // ALERTS — SHOW ONLY ONCE PER USER (NO MORE SPAM ON REFRESH)
+    db.ref("alert").on("value", snap => {
+      const alertData = snap.val();
+      if (!alertData || !alertData.message) return;
+
+      // Generate a unique ID for this alert using timestamp + message
+      const alertId = btoa(alertData.message + (alertData.timestamp || ""));
+
+      // Check if user already saw this exact alert
+      if (localStorage.getItem("seenAlert_" + alertId)) return;
+
+      // Show the purple alert
       const div = document.getElementById("globalAlert");
-      if (a && a.message) {
-        div.textContent = a.message;
-        div.style.display = "block";
-        setTimeout(() => div.style.display = "none", 8000);
-      }
+      div.textContent = alertData.message;
+      div.style.display = "block";
+
+      // Mark as seen so it won't show again
+      localStorage.setItem("seenAlert_" + alertId, "true");
+
+      // Auto-hide after 8 seconds
+      setTimeout(() => {
+        div.style.display = "none";
+      }, 8000);
     });
 
     // Force exit fullscreen
