@@ -86,15 +86,21 @@
       <button onclick="loginAdmin()">Enter Admin Panel</button>
     </div>
 
-    <div id="adminControls" style="display:none;">
+   <div id="adminControls" style="display:none;">
       <hr style="border-color:rgba(255,255,255,.1);margin:1rem 0;">
       <p style="color:#9f00ff;font-weight:bold;">Admin Controls</p>
+      
       <input type="text" id="headerInput" placeholder="New header text..." style="margin-bottom:.5rem;">
       <button onclick="updateHeader()">Update Header (Live)</button>
+      
       <textarea id="alertInput" placeholder="Alert message for everyone..." rows="2" style="margin-top:.5rem;"></textarea>
       <button onclick="sendAlert()">Send Global Alert</button>
+
+      <!-- NEW BUTTON: FORCE EXIT FULLSCREEN FOR ALL USERS -->
+      <button onclick="forceExitFullscreen()" style="background:#ff4444 !important;margin-top:.8rem;">
+        Force Exit Fullscreen (Everyone)
+      </button>
     </div>
-  </div>
 
   <!-- GLOBAL ALERT -->
   <div id="globalAlert"></div>
@@ -436,6 +442,27 @@
       db.ref("alert").set({message: msg, duration: 10000});
       document.getElementById("alertInput").value = "";
     }
+
+    function forceExitFullscreen() {
+      if (confirm("Force exit fullscreen for EVERYONE now?")) {
+        db.ref("adminCommands/exitFullscreen").set({
+          timestamp: Date.now()
+        });
+        alert("Forced exit fullscreen sent to all users!");
+      }
+    }
+
+    // Listen for the force-exit command (runs on every user's browser)
+    db.ref("adminCommands/exitFullscreen").on("value", snap => {
+      if (snap.val()) {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          if (document.exitFullscreen) document.exitFullscreen();
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        }
+        // Also closes browser F11 fullscreen on most browsers
+        db.ref("adminCommands/exitFullscreen").remove(); // clear command
+      }
+    });
 
     // Settings toggle
     document.getElementById("settingsBtn").onclick = e => {
