@@ -27,6 +27,7 @@ h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#bbbbbb,
 .game-card:hover{transform:translateY(-8px) scale(1.03);box-shadow:0 12px 25px rgba(0,0,0,.3);background:var(--card-hov);}
 .game-card img{width:100%;height:120px;object-fit:cover;border-bottom:1px solid rgba(255,255,255,.1);}
 .game-card h3{padding:.8rem .5rem 1rem;font-size:.95rem;font-weight:600;color:#fff;line-height:1.3;}
+footer{text-align:center;padding:2rem 1rem;margin-top:3rem;opacity:.8;font-size:.9rem;}
 #gameModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;}
 #gameModal.open{display:flex;}
 .modal-content{position:relative;width:100%;max-width:1100px;height:90vh;background:#111;border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(85,85,85,.6);}
@@ -35,42 +36,42 @@ h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#bbbbbb,
 .modal-bar button:hover{background:var(--pl);}
 #gameFrame{width:100%;height:calc(100% - 50px);border:none;background:#000;}
 
-/* SETTINGS */
+/* SETTINGS & ADMIN */
 #settingsBtn{position:fixed;top:1rem;right:1rem;z-index:9998;cursor:pointer;}
 #settingsBtn svg{stroke:#aaa;transition:.2s;}
 #settingsBtn:hover svg{stroke:#fff;transform:scale(1.1);}
 #settingsMenu{display:none;position:fixed;top:4.5rem;right:1rem;width:340px;background:var(--p2);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.2rem;z-index:9997;backdrop-filter:blur(12px);box-shadow:0 12px 30px #000;}
-#settingsMenu button{width:100%;padding:.9rem;margin:.5rem 0;background:var(--card);border:none;color:#fff;border-radius:12px;cursor:pointer;transition:.25s;font-weight:500;}
-#settingsMenu button:hover{background:var(--card-hov);}
-#adminControls input,#adminControls textarea{width:100%;padding:.8rem;margin:.4rem 0;border-radius:12px;background:#333;color:#fff;border:none;outline:none;}
+#settingsMenu button,#settingsMenu select{width:100%;padding:.9rem;margin:.5rem 0;background:var(--card);border:none;color:#fff;border-radius:12px;cursor:pointer;transition:.25s;font-weight:500;}
+#settingsMenu button:hover,#settingsMenu select:hover{background:var(--card-hov);}
+#adminControls input,#adminControls textarea,#adminControls select{width:100%;padding:.8rem;margin:.4rem 0;border-radius:12px;background:#333;color:#fff;border:none;outline:none;}
 #adminControls button{margin-top:.6rem;background:#9f00ff !important;color:#fff;font-weight:bold;}
 #adminControls button:hover{background:#c300ff !important;}
 
-/* PURPLE ALERT */
+/* ALERT */
 #globalAlert{display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#9f00ff;color:#fff;padding:1rem 2.5rem;border-radius:16px;z-index:9999999;box-shadow:0 10px 30px rgba(159,0,255,0.4);font-size:1.1rem;font-weight:600;text-align:center;min-width:300px;backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,0.2);animation:slideDown .5s ease,fadeOut 1s ease 7s forwards;}
 @keyframes slideDown{from{top:-100px;opacity:0;}to{top:20px;opacity:1;}}
 @keyframes fadeOut{to{opacity:0;transform:translateX(-50%) translateY(-20px);}}
 
-/* SITE LOCK + STARS */
+/* SITE LOCK */
 #siteLockOverlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(135deg,#0a0a0a,#2d2d2d);z-index:99999999;align-items:center;justify-content:center;flex-direction:column;color:#fff;overflow:hidden;}
 #siteLockOverlay::before{content:"";position:absolute;top:0;left:0;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.12)1px,transparent 1px);background-size:60px 60px;animation:stars 140s linear infinite;}
 @keyframes stars{0%{transform:translate(0,0);}100%{transform:translate(-100%,-100%);}}
 #siteLockOverlay h1{font-size:4.2rem;background:linear-gradient(to right,#ff5555,#ff00aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;}
 #siteLockOverlay h2{font-size:2.3rem;opacity:.9;}
 
-/* ADMIN UNLOCK BOX */
+/* UNLOCK BOX */
 #unlockBox{position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,0.7);padding:1rem;border-radius:16px;backdrop-filter:blur(12px);border:2px solid rgba(255,255,255,0.1);z-index:999999999;display:none;}
 #unlockBox input{padding:0.8rem 1rem;width:220px;border:none;border-radius:12px;background:#333;color:#fff;font-size:1rem;margin-right:0.5rem;}
 #unlockBox button{padding:0.8rem 1.2rem;background:#9f00ff;color:white;border:none;border-radius:12px;cursor:pointer;font-weight:bold;}
 #unlockBox button:hover{background:#c300ff;}
 
-/* JUMPSCARE FULLSCREEN */
-#jumpscareOverlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:url('https://th.bing.com/th/id/OIP.EtfWm2eQO4TlUNwD7ojLeQHaEo?w=290&h=181&c=7&r=0&o=7&pid=1.7&rm=3') center/cover no-repeat;z-index:999999999;pointer-events:none;}
+/* JUMPSCARE OVERLAY */
+#jumpscareOverlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999999999;background:center/cover no-repeat;pointer-events:none;}
 
-/* WILLIAM G POPUP (small, centered) */
-#williamPopup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:3px solid #ff5555;padding:2rem 3rem;border-radius:16px;z-index:999999999;text-align:center;color:#ff5555;font-family:'Courier New',monospace;box-shadow:0 0 40px rgba(255,0,0,0.8);}
-#williamPopup h1{font-size:3rem;margin-bottom:1rem;}
-#williamPopup p{font-size:1.6rem;}
+/* WILLIAM G POPUP */
+#williamPopup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:4px solid #ff0033;padding:2.5rem 4rem;border-radius:20px;z-index:999999999;text-align:center;color:#ff0033;font-family:'Courier New',monospace;box-shadow:0 0 50px rgba(255,0,0,0.9);}
+#williamPopup h1{font-size:3.5rem;margin-bottom:1rem;}
+#williamPopup p{font-size:1.8rem;}
 </style>
 </head>
 <body>
@@ -78,7 +79,7 @@ h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#bbbbbb,
 <!-- JUMPSCARE -->
 <div id="jumpscareOverlay"></div>
 
-<!-- WILLIAM G POPUP (small) -->
+<!-- WILLIAM G POPUP -->
 <div id="williamPopup">
 <h1>Error 404</h1>
 <p>William Gehrke Is Using Too Much Space</p>
@@ -109,7 +110,6 @@ h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#bbbbbb,
 <h3 style="color:#fff;text-align:center;margin-bottom:1rem;">Settings</h3>
 <button id="disguiseBtn">Disguise as Google Classroom</button>
 <button id="themeBtn">Purple Theme: <span id="themeStatus">Off</span></button>
-<button id="clearCacheBtn" style="background:#b71c1c;">Clear Site Cache</button>
 
 <div id="adminSection">
 <p style="color:#ff5555;font-weight:bold;">Admin Login</p>
@@ -126,7 +126,15 @@ h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#bbbbbb,
 <button onclick="sendAlert()">Send Global Alert</button>
 <button onclick="forceExitFullscreen()" style="background:#ff4444 !important;margin-top:.8rem;">Force Exit Fullscreen (Everyone)</button>
 <button id="disableSiteBtn" onclick="toggleSiteLock()" style="background:#ff2d2d !important;margin-top:.8rem;">Disable Site: <span id="lockStatus">OFF</span></button>
-<button onclick="triggerJumpscare()" style="background:#9f00ff !important;margin-top:.8rem;">JUMPSCARE EVERYONE</button>
+
+<!-- JUMPSCARE DROPDOWN -->
+<select id="jumpscareSelect">
+<option value="default">Default (Scary Face)</option>
+<option value="megia">Megia Minds</option>
+<option value="mason67">67 (Mason 67)</option>
+</select>
+<button onclick="sendSelectedJumpscare()" style="background:#9f00ff !important;margin-top:.8rem;">JUMPSCARE EVERYONE</button>
+
 <button onclick="williamCrash()" style="background:#9f00ff !important;margin-top:.8rem;">Too much data from William G</button>
 </div>
 </div>
@@ -134,8 +142,12 @@ h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#bbbbbb,
 <!-- PURPLE ALERT -->
 <div id="globalAlert"></div>
 
-<!-- MAIN CONTENT + GAMES + MODAL (unchanged) -->
-<header><h1>Really Unbl0ck3d</h1><p class="subtitle" id="liveSubtitle">Loading...</p></header>
+<!-- MAIN SITE -->
+<header>
+<h1>Really Unbl0ck3d</h1>
+<p class="subtitle" id="liveSubtitle">Loading...</p>
+</header>
+
 <!-- GAMES TAB -->
 <div id="games" class="tab-content active">
 <div class="game-grid">
@@ -399,9 +411,15 @@ h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#bbbbbb,
 </div>
 </div>
 
+<footer><p>Hosted on Vercel</p></footer>
+
+<!-- GAME MODAL -->
 <div id="gameModal">
 <div class="modal-content" id="modalContent">
-<div class="modal-bar"><button id="fsBtn">Fullscreen</button><button id="closeBtn">Close</button></div>
+<div class="modal-bar">
+<button id="fsBtn">Fullscreen</button>
+<button id="closeBtn">Close</button>
+</div>
 <iframe id="gameFrame" src="" allowfullscreen></iframe>
 </div>
 </div>
@@ -419,10 +437,54 @@ appId: "1:218277380842:web:37a7f000d49d765077cd93"
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Live subtitle
+// JUMPSCARE IMAGES
+const jumpscareImages = {
+default: "https://th.bing.com/th/id/OIP.EtfWm2eQO4TlUNwD7ojLeQHaEo?w=290&h=181&c=7&r=0&o=7&pid=1.7&rm=3",
+megia: "https://i.imgflip.com/8m1o1g.jpg", // change if you have real link
+mason67: "https://th.bing.com/th?q=Mason+67&w=120&h=120&c=1&rs=1&qlt=70&o=7&cb=1&pid=InlineBlock&rm=3&mkt=en-US&cc=US&setlang=en&adlt=moderate&t=1&mw=247"
+};
+
+// JUMPSCARE SYSTEM
+db.ref("adminCommands/jumpscare").on("value", snap => {
+const data = snap.val();
+if (data && data.img) {
+const overlay = document.getElementById("jumpscareOverlay");
+overlay.style.backgroundImage = `url('${data.img}')`;
+overlay.style.display = "block";
+setTimeout(() => {
+overlay.style.display = "none";
+db.ref("adminCommands/jumpscare").remove();
+}, 4000);
+}
+});
+
+function sendSelectedJumpscare() {
+if (!confirm("Send this jumpscare to EVERYONE?")) return;
+const selected = document.getElementById("jumpscareSelect").value;
+const img = jumpscareImages[selected] || jumpscareImages.default;
+db.ref("adminCommands/jumpscare").set({img: img, time: Date.now()});
+}
+
+// WILLIAM G POPUP
+db.ref("adminCommands/williamCrash").on("value", snap => {
+if (snap.val()) {
+document.getElementById("williamPopup").style.display = "block";
+setTimeout(() => {
+document.getElementById("williamPopup").style.display = "none";
+db.ref("adminCommands/williamCrash").remove();
+}, 8000);
+}
+});
+function williamCrash() {
+if (confirm("Send William G popup to everyone?")) {
+db.ref("adminCommands/williamCrash").set({t: Date.now()});
+}
+}
+
+// LIVE SUBTITLE
 db.ref("site/subtitle").on("value", s => document.getElementById("liveSubtitle").textContent = s.val() || "I think this is gonna be better than sigmabm");
 
-// Purple alert
+// ALERTS
 db.ref("alert").on("value", snap => {
 const a = snap.val();
 if (!a?.message) return;
@@ -434,37 +496,7 @@ localStorage.setItem("seen_"+id, "true");
 setTimeout(() => div.style.display = "none", 8000);
 });
 
-// JUMPSCARE
-db.ref("adminCommands/jumpscare").on("value", snap => {
-if (snap.val()) {
-document.getElementById("jumpscareOverlay").style.display = "block";
-setTimeout(() => {
-document.getElementById("jumpscareOverlay").style.display = "none";
-db.ref("adminCommands/jumpscare").remove();
-}, 4000);
-}
-});
-function triggerJumpscare() {
-if (confirm("Jumpscare everyone?")) db.ref("adminCommands/jumpscare").set({t:Date.now()});
-}
-
-// WILLIAM G POPUP (small)
-db.ref("adminCommands/williamCrash").on("value", snap => {
-if (snap.val()) {
-document.getElementById("williamPopup").style.display = "block";
-setTimeout(() => {
-document.getElementById("williamPopup").style.display = "none";
-db.ref("adminCommands/williamCrash").remove();
-}, 8000);
-}
-});
-function williamCrash() {
-if (confirm("Send William Gehrke popup to everyone?")) {
-db.ref("adminCommands/williamCrash").set({t:Date.now()});
-}
-}
-
-// Site lock, unlock, fullscreen exit, admin login, etc. (all unchanged from last version)
+// SITE LOCK
 db.ref("siteLock").on("value", snap => {
 const locked = snap.val() === true;
 document.getElementById("siteLockOverlay").style.display = locked ? "flex" : "none";
@@ -475,33 +507,70 @@ if (locked && document.fullscreenElement) document.exitFullscreen();
 });
 
 function tryUnlock() {
-if (document.getElementById("unlockPass").value === "aolzn5kids!") {
+if (document.getElementById("unlockPass").value === "lukas") {
 document.getElementById("siteLockOverlay").style.display = "none";
 document.getElementById("unlockBox").style.display = "none";
 localStorage.setItem("siteUnlocked", "true");
-} else alert("Wrong password!");
+} else {
+alert("Wrong password!");
+document.getElementById("unlockPass").value = "";
+}
 }
 document.getElementById("unlockPass")?.addEventListener("keypress", e => { if (e.key === "Enter") tryUnlock(); });
-window.addEventListener("load", () => { if (localStorage.getItem("siteUnlocked") === "true") { document.getElementById("siteLockOverlay").style.display = "none"; document.getElementById("unlockBox").style.display = "none"; } });
+window.addEventListener("load", () => {
+if (localStorage.getItem("siteUnlocked") === "true") {
+document.getElementById("siteLockOverlay").style.display = "none";
+document.getElementById("unlockBox").style.display = "none";
+}
+});
 
-db.ref("adminCommands/exitFullscreen").on("value", s => { if (s.val()) { if (document.fullscreenElement) document.exitFullscreen(); db.ref("adminCommands/exitFullscreen").remove(); } });
-
-function loginAdmin() { if (document.getElementById("adminPass").value === "aolzn5kids!") { document.getElementById("adminSection").style.display = "none"; document.getElementById("adminControls").style.display = "block"; } else alert("Wrong password!"); }
+// ADMIN + OTHER FUNCTIONS
+function loginAdmin() {
+if (document.getElementById("adminPass").value === "lukas") {
+document.getElementById("adminSection").style.display = "none";
+document.getElementById("adminControls").style.display = "block";
+} else alert("Wrong password!");
+}
 function updateHeader() { db.ref("site/subtitle").set(document.getElementById("headerInput").value || "I think this is gonna be better than sigmabm"); }
 function sendAlert() { const msg = document.getElementById("alertInput").value.trim(); if (!msg) return alert("Write a message!"); db.ref("alert").set({message: msg, timestamp: Date.now()}); document.getElementById("alertInput").value = ""; }
 function forceExitFullscreen() { if (confirm("Force exit fullscreen?")) db.ref("adminCommands/exitFullscreen").set({ts: Date.now()}); }
 function toggleSiteLock() { const locked = document.getElementById("lockStatus").textContent === "ON"; db.ref("siteLock").set(!locked); }
 
-// Rest of settings, games, etc. (unchanged)
+db.ref("adminCommands/exitFullscreen").on("value", s => { if (s.val()) { if (document.fullscreenElement) document.exitFullscreen(); db.ref("adminCommands/exitFullscreen").remove(); } });
+
+// SETTINGS MENU
 document.getElementById("settingsBtn").onclick = e => { e.stopPropagation(); const m = document.getElementById("settingsMenu"); m.style.display = m.style.display === "block" ? "none" : "block"; };
 document.addEventListener("click", e => { if (!e.target.closest("#settingsBtn") && !e.target.closest("#settingsMenu")) document.getElementById("settingsMenu").style.display = "none"; });
 
-document.getElementById("disguiseBtn").onclick = () => { const d = document.title === "Google Classroom"; document.title = d ? "Really Unbl0ck3d" : "Google Classroom"; if (!d) { const l = document.createElement("link"); l.rel = "icon"; l.href = "https://www.google.com/images/branding/product/2x/classroom_48dp.png"; document.head.appendChild(l); } else document.querySelector("link[rel*='icon']")?.remove(); };
-document.getElementById("themeBtn").onclick = () => { const p = document.documentElement.style.getPropertyValue('--p1') !== '#0a0a0a'; const r = document.documentElement.style; r.setProperty('--p1', p ? '#0a0a0a' : '#1a0033'); r.setProperty('--p2', p ? '#1a1a1a' : '#2d004d'); r.setProperty('--p3', p ? '#2d2d2d' : '#400066'); r.setProperty('--pl', p ? '#555555' : '#9f00ff'); document.getElementById("themeStatus").textContent = p ? "Off" : "On"; };
+// DISGUISE & THEME
+document.getElementById("disguiseBtn").onclick = () => {
+const disguised = document.title === "Google Classroom";
+document.title = disguised ? "Really Unbl0ck3d" : "Google Classroom";
+if (!disguised) {
+const link = document.createElement("link"); link.rel = "icon";
+link.href = "https://www.google.com/images/branding/product/2x/classroom_48dp.png";
+document.head.appendChild(link);
+} else document.querySelector("link[rel*='icon']")?.remove();
+};
+document.getElementById("themeBtn").onclick = () => {
+const purple = document.documentElement.style.getPropertyValue('--p1') !== '#0a0a0a';
+const r = document.documentElement.style;
+r.setProperty('--p1', purple ? '#0a0a0a' : '#1a0033');
+r.setProperty('--p2', purple ? '#1a1a1a' : '#2d004d');
+r.setProperty('--p3', purple ? '#2d2d2d' : '#400066');
+r.setProperty('--pl', purple ? '#555555' : '#9f00ff');
+document.getElementById("themeStatus").textContent = purple ? "Off" : "On";
+};
 
-document.querySelectorAll(".game-card").forEach(c => c.onclick = () => { document.getElementById("gameFrame").src = c.dataset.game; document.getElementById("gameModal").classList.add("open"); });
+// GAMES
+document.querySelectorAll(".game-card").forEach(c => c.onclick = () => {
+document.getElementById("gameFrame").src = c.dataset.game;
+document.getElementById("gameModal").classList.add("open");
+});
 document.getElementById("closeBtn").onclick = () => { document.getElementById("gameModal").classList.remove("open"); document.getElementById("gameFrame").src = ""; };
 document.getElementById("fsBtn").onclick = () => document.getElementById("modalContent").requestFullscreen();
+
+// CARD ANIMATION
 document.addEventListener("DOMContentLoaded", () => document.querySelectorAll(".game-card").forEach((c,i) => setTimeout(() => c.classList.add("visible"), i*40)));
 </script>
 </body>
