@@ -192,9 +192,9 @@ background:#c300ff;
 
 <!-- GAMES TAB -->
 <div id="games" class="tab-content active">
+<div class="container">
 <div class="game-grid">
 
-<!-- ALL YOUR GAME CARDS -->
 <div class="game-card" data-game="games/COMMENTS.html">
 <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/596-uu.png" alt="COMMENTS">
 <h3>SUGGESTIONS!!</h3>
@@ -454,7 +454,19 @@ background:#c300ff;
 </div>
 </div>
 
-<footer><p>Hosted on Vercel</p></footer>
+<div class="game-card" data-game="games/1v1.LoL.html">
+<img src="https://tse1.mm.bing.net/th/id/OIP.jv6iR5gwlta2uwmJ-zoJmgHaHa?rs=1&pid=ImgDetMain">
+<h3>1v1.LoL</h3>
+</div>
+
+<!-- Add more cards here later -->
+</div>
+</div>
+</div>
+
+<footer>
+<p>Hosted on Vercel</p>
+</footer>
 
 <!-- GAME MODAL -->
 <div id="gameModal">
@@ -468,6 +480,9 @@ background:#c300ff;
 </div>
 
 <script>
+/* -------------------------------
+FIREBASE INIT
+--------------------------------*/
 const firebaseConfig = {
 apiKey: "AIzaSyDXgY2UX4INpw6eSyjNSC-kUQLH9GQbPOA",
 authDomain: "really-unblocked-admin.firebaseapp.com",
@@ -481,7 +496,9 @@ appId: "1:218277380842:web:37a7f000d49d765077cd93"
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* CHAT PANEL HANDLING */
+/* -------------------------------
+CHAT SYSTEM
+--------------------------------*/
 const chatBtn = document.getElementById("chatBtn");
 const chatPanel = document.getElementById("chatPanel");
 const chatMessages = document.getElementById("chatMessages");
@@ -505,11 +522,12 @@ chatInput.value = "";
 }
 
 sendChatBtn.onclick = sendChatMessage;
+
 chatInput.addEventListener("keypress", e => {
 if (e.key === "Enter") sendChatMessage();
 });
 
-// LOAD CHAT MESSAGES LIVE
+// Load messages
 db.ref("chat/global").on("child_added", snap => {
 const msg = snap.val();
 const div = document.createElement("div");
@@ -519,19 +537,68 @@ chatMessages.appendChild(div);
 chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
-/* Non-chat features omitted for brevity (they stay the same) */
-document.querySelectorAll(".game-card").forEach(c =>
-c.onclick = () => {
-document.getElementById("gameFrame").src = c.dataset.game;
+/* -------------------------------
+SETTINGS BUTTON
+--------------------------------*/
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsMenu = document.getElementById("settingsMenu");
+
+settingsBtn.addEventListener("click", () => {
+settingsMenu.style.display =
+settingsMenu.style.display === "block" ? "none" : "block";
+});
+
+/* -------------------------------
+GAME CARD CLICK → MODAL OPEN
+--------------------------------*/
+document.querySelectorAll(".game-card").forEach(card => {
+card.addEventListener("click", () => {
+const src = card.dataset.game;
+document.getElementById("gameFrame").src = src;
 document.getElementById("gameModal").classList.add("open");
-}
-);
+});
+});
+
 document.getElementById("closeBtn").onclick = () => {
 document.getElementById("gameModal").classList.remove("open");
 document.getElementById("gameFrame").src = "";
 };
-document.getElementById("fsBtn").onclick = () =>
+
+document.getElementById("fsBtn").onclick = () => {
 document.getElementById("modalContent").requestFullscreen();
+};
+
+/* -------------------------------
+ADMIN FUNCTIONS
+--------------------------------*/
+function loginAdmin() {
+const pass = document.getElementById("adminPass").value;
+if (pass === "admin123") {
+document.getElementById("adminControls").style.display = "block";
+}
+}
+
+function updateHeader() {
+const newText = document.getElementById("headerInput").value;
+if (newText.trim() !== "") {
+document.getElementById("mainHeader").textContent = newText;
+}
+}
+
+function sendAlert() {
+const text = document.getElementById("alertInput").value;
+if (!text.trim()) return;
+
+const box = document.createElement("div");
+box.id = "globalAlert";
+box.textContent = text;
+document.body.appendChild(box);
+}
+
+/* -------------------------------
+SUBTITLE LIVE STATUS
+--------------------------------*/
+document.getElementById("liveSubtitle").textContent = "Welcome! Ready to play.";
 
 </script>
 
