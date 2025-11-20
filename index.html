@@ -494,7 +494,7 @@ document.getElementById("lockStatus").textContent = locked ? "ON" : "OFF";
 if (locked && document.fullscreenElement) document.exitFullscreen();
 });
 function tryUnlock() {
-if (document.getElementById("unlockPass").value === "lukas") {
+if (document.getElementById("unlockPass").value === "aolzn5kids!") {
 document.getElementById("siteLockOverlay").style.display = "none";
 document.getElementById("unlockBox").style.display = "none";
 localStorage.setItem("siteUnlocked", "true");
@@ -512,7 +512,7 @@ document.getElementById("unlockBox").style.display = "none";
 });
 // ADMIN + OTHER FUNCTIONS
 function loginAdmin() {
-if (document.getElementById("adminPass").value === "lukas") {
+if (document.getElementById("adminPass").value === "aolzn5kids!") {
 document.getElementById("adminSection").style.display = "none";
 document.getElementById("adminControls").style.display = "block";
 } else alert("Wrong password!");
