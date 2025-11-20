@@ -5,11 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Really Unbl0ck3d</title>
 <link rel="icon" href="data:,">
-
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
 <style>
 :root{
 --p1:#0a0a0a; --p2:#1a1a1a; --p3:#2d2d2d; --pl:#555555;
@@ -35,125 +33,57 @@ footer{text-align:center;padding:2rem 1rem;margin-top:3rem;opacity:.8;font-size:
 .modal-bar button{background:rgba(255,255,255,.2);border:none;color:#fff;padding:.4rem .8rem;border-radius:6px;cursor:pointer;}
 .modal-bar button:hover{background:var(--pl);}
 #gameFrame{width:100%;height:calc(100% - 50px);border:none;background:#000;}
-
-/* SETTINGS BUTTON */
+/* SETTINGS & ADMIN */
 #settingsBtn{position:fixed;top:1rem;right:1rem;z-index:9998;cursor:pointer;}
 #settingsBtn svg{stroke:#aaa;transition:.2s;}
 #settingsBtn:hover svg{stroke:#fff;transform:scale(1.1);}
-
-/* CHAT BUTTON */
-#chatBtn{
-position:fixed;
-top:1rem;
-right:4.2rem;
-z-index:9998;
-cursor:pointer;
-}
-#chatBtn svg{stroke:#aaa;transition:.2s;}
-#chatBtn:hover svg{stroke:#fff;transform:scale(1.1);}
-
-/* CHAT PANEL */
-#chatPanel{
-position:fixed;
-top:0;
-left:-340px;
-width:320px;
-height:100vh;
-background:#111;
-border-right:1px solid rgba(255,255,255,.15);
-transition:.35s ease;
-z-index:99999;
-padding:1rem;
-display:flex;
-flex-direction:column;
-}
-#chatPanel.open{
-left:0;
-}
-#chatPanel h2{
-text-align:center;
-font-size:1.4rem;
-margin-bottom:.8rem;
-}
-#chatMessages{
-flex:1;
-overflow-y:auto;
-padding-right:5px;
-margin-bottom:1rem;
-}
-.chatMsg{
-background:#222;
-padding:.6rem .7rem;
-border-radius:10px;
-margin-bottom:.4rem;
-font-size:.9rem;
-}
-#chatInputBox{
-display:flex;
-gap:.4rem;
-}
-#chatInput{
-flex:1;
-padding:.7rem;
-border-radius:10px;
-border:none;
-background:#333;color:#fff;
-}
-#sendChatBtn{
-padding:.7rem 1rem;
-background:#9f00ff;
-border:none;
-color:#fff;
-border-radius:10px;
-cursor:pointer;
-}
-#sendChatBtn:hover{
-background:#c300ff;
-}
-
-
-/* SETTINGS MENU */
 #settingsMenu{display:none;position:fixed;top:4.5rem;right:1rem;width:340px;background:var(--p2);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.2rem;z-index:9997;backdrop-filter:blur(12px);box-shadow:0 12px 30px #000;}
 #settingsMenu button,#settingsMenu select{width:100%;padding:.9rem;margin:.5rem 0;background:var(--card);border:none;color:#fff;border-radius:12px;cursor:pointer;transition:.25s;font-weight:500;}
 #settingsMenu button:hover,#settingsMenu select:hover{background:var(--card-hov);}
-
 #adminControls input,#adminControls textarea,#adminControls select{width:100%;padding:.8rem;margin:.4rem 0;border-radius:12px;background:#333;color:#fff;border:none;outline:none;}
 #adminControls button{margin-top:.6rem;background:#9f00ff !important;color:#fff;font-weight:bold;}
 #adminControls button:hover{background:#c300ff !important;}
-
 /* ALERT */
 #globalAlert{display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#9f00ff;color:#fff;padding:1rem 2.5rem;border-radius:16px;z-index:9999999;box-shadow:0 10px 30px rgba(159,0,255,0.4);font-size:1.1rem;font-weight:600;text-align:center;min-width:300px;backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,0.2);animation:slideDown .5s ease,fadeOut 1s ease 7s forwards;}
 @keyframes slideDown{from{top:-100px;opacity:0;}to{top:20px;opacity:1;}}
 @keyframes fadeOut{to{opacity:0;transform:translateX(-50%) translateY(-20px);}}
-
 /* SITE LOCK */
 #siteLockOverlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(135deg,#0a0a0a,#2d2d2d);z-index:99999999;align-items:center;justify-content:center;flex-direction:column;color:#fff;overflow:hidden;}
+#siteLockOverlay::before{content:"";position:absolute;top:0;left:0;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.12)1px,transparent 1px);background-size:60px 60px;animation:stars 140s linear infinite;}
+@keyframes stars{0%{transform:translate(0,0);}100%{transform:translate(-100%,-100%);}}
 #siteLockOverlay h1{font-size:4.2rem;background:linear-gradient(to right,#ff5555,#ff00aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;}
 #siteLockOverlay h2{font-size:2.3rem;opacity:.9;}
-
+/* UNLOCK BOX */
+#unlockBox{position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,0.7);padding:1rem;border-radius:16px;backdrop-filter:blur(12px);border:2px solid rgba(255,255,255,0.1);z-index:999999999;display:none;}
+#unlockBox input{padding:0.8rem 1rem;width:220px;border:none;border-radius:12px;background:#333;color:#fff;font-size:1rem;margin-right:0.5rem;}
+#unlockBox button{padding:0.8rem 1.2rem;background:#9f00ff;color:white;border:none;border-radius:12px;cursor:pointer;font-weight:bold;}
+#unlockBox button:hover{background:#c300ff;}
+/* JUMPSCARE OVERLAY */
+#jumpscareOverlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999999999;background:center/cover no-repeat;pointer-events:none;}
+/* WILLIAM G POPUP */
+#williamPopup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:4px solid #ff0033;padding:2.5rem 4rem;border-radius:20px;z-index:999999999;text-align:center;color:#ff0033;font-family:'Courier New',monospace;box-shadow:0 0 50px rgba(255,0,0,0.9);}
+#williamPopup h1{font-size:3.5rem;margin-bottom:1rem;}
+#williamPopup p{font-size:1.8rem;}
 </style>
 </head>
 <body>
-
-<!-- CHAT BUTTON -->
-<div id="chatBtn">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2">
-<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-</svg>
+<!-- JUMPSCARE -->
+<div id="jumpscareOverlay"></div>
+<!-- WILLIAM G POPUP -->
+<div id="williamPopup">
+<h1>Error 404</h1>
+<p>William Gehrke Is Using Too Much Space</p>
 </div>
-
-<!-- CHAT PANEL -->
-<div id="chatPanel">
-<h2>Global Chat</h2>
-<div id="chatMessages"></div>
-<div id="chatInputBox">
-<input id="chatInput" placeholder="Type a message...">
-<button id="sendChatBtn">Send</button>
+<!-- SITE LOCK -->
+<div id="siteLockOverlay">
+<h1>Really Unbl0ck3d</h1>
+<h2>Be right back...</h2>
 </div>
+<!-- ADMIN UNLOCK BOX -->
+<div id="unlockBox">
+<input type="password" id="unlockPass" placeholder="Admin password">
+<button onclick="tryUnlock()">Unlock</button>
 </div>
-
-
-
 <!-- SETTINGS BUTTON -->
 <div id="settingsBtn">
 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2">
@@ -161,19 +91,16 @@ background:#c300ff;
 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
 </svg>
 </div>
-
-<!-- SETTINGS MENU -->
+<!-- ADMIN PANEL -->
 <div id="settingsMenu">
 <h3 style="color:#fff;text-align:center;margin-bottom:1rem;">Settings</h3>
 <button id="disguiseBtn">Disguise as Google Classroom</button>
 <button id="themeBtn">Purple Theme: <span id="themeStatus">Off</span></button>
-
 <div id="adminSection">
 <p style="color:#ff5555;font-weight:bold;">Admin Login</p>
 <input type="password" id="adminPass" placeholder="Password">
 <button onclick="loginAdmin()">Enter Admin Panel</button>
 </div>
-
 <div id="adminControls" style="display:none;">
 <hr style="border-color:rgba(255,255,255,.1);margin:1rem 0;">
 <p style="color:#9f00ff;font-weight:bold;">Admin Controls</p>
@@ -181,20 +108,33 @@ background:#c300ff;
 <button onclick="updateHeader()">Update Header (Live)</button>
 <textarea id="alertInput" placeholder="Alert message..." rows="2"></textarea>
 <button onclick="sendAlert()">Send Global Alert</button>
+<button onclick="forceExitFullscreen()" style="background:#ff4444 !important;margin-top:.8rem;">Force Exit Fullscreen (Everyone)</button>
 
+<!-- ADDED: CLOSE ALL GAMES BUTTON -->
+<button onclick="closeAllGames()" style="background:#ff0066 !important;margin-top:.8rem;">Close Everyone's Game</button>
+
+<button id="disableSiteBtn" onclick="toggleSiteLock()" style="background:#ff2d2d !important;margin-top:.8rem;">Disable Site: <span id="lockStatus">OFF</span></button>
+<!-- JUMPSCARE DROPDOWN -->
+<select id="jumpscareSelect">
+<option value="default">Default (Scary Face)</option>
+<option value="megia">Megia Minds</option>
+<option value="mason67">67 (Mason 67)</option>
+</select>
+<button onclick="sendSelectedJumpscare()" style="background:#9f00ff !important;margin-top:.8rem;">JUMPSCARE EVERYONE</button>
+<button onclick="williamCrash()" style="background:#9f00ff !important;margin-top:.8rem;">Too much data from William G</button>
 </div>
 </div>
-
+<!-- PURPLE ALERT -->
+<div id="globalAlert"></div>
+<!-- MAIN SITE -->
 <header>
 <h1>Really Unbl0ck3d</h1>
 <p class="subtitle" id="liveSubtitle">Loading...</p>
 </header>
-
 <!-- GAMES TAB -->
 <div id="games" class="tab-content active">
-<div class="container">
 <div class="game-grid">
-
+<!-- ALL YOUR GAME CARDS -->
 <div class="game-card" data-game="games/COMMENTS.html">
 <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/596-uu.png" alt="COMMENTS">
 <h3>SUGGESTIONS!!</h3>
@@ -451,11 +391,9 @@ background:#c300ff;
 <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/7.png" alt="Jetpack Joyride">
 <h3>Jetpack Joyride</h3>
 </div>
-
-<footer>
-<p>Hosted on Vercel</p>
-</footer>
-
+</div>
+</div>
+<footer><p>Hosted on Vercel</p></footer>
 <!-- GAME MODAL -->
 <div id="gameModal">
 <div class="modal-content" id="modalContent">
@@ -466,11 +404,7 @@ background:#c300ff;
 <iframe id="gameFrame" src="" allowfullscreen></iframe>
 </div>
 </div>
-
 <script>
-/* -------------------------------
-FIREBASE INIT
---------------------------------*/
 const firebaseConfig = {
 apiKey: "AIzaSyDXgY2UX4INpw6eSyjNSC-kUQLH9GQbPOA",
 authDomain: "really-unblocked-admin.firebaseapp.com",
@@ -480,115 +414,145 @@ storageBucket: "really-unblocked-admin.firebasestorage.app",
 messagingSenderId: "218277380842",
 appId: "1:218277380842:web:37a7f000d49d765077cd93"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* -------------------------------
-CHAT SYSTEM
---------------------------------*/
-const chatBtn = document.getElementById("chatBtn");
-const chatPanel = document.getElementById("chatPanel");
-const chatMessages = document.getElementById("chatMessages");
-const chatInput = document.getElementById("chatInput");
-const sendChatBtn = document.getElementById("sendChatBtn");
-
-chatBtn.onclick = () => {
-chatPanel.classList.toggle("open");
-};
-
-function sendChatMessage() {
-const text = chatInput.value.trim();
-if (!text) return;
-
-db.ref("chat/global").push({
-text: text,
-time: Date.now()
-});
-
-chatInput.value = "";
+// === NEW: CLOSE EVERYONE'S GAMES ===
+function closeAllGames() {
+if (confirm("Close EVERYONE'S game right now?")) {
+db.ref("adminCommands/closeGames").set({ time: Date.now() });
 }
-
-sendChatBtn.onclick = sendChatMessage;
-
-chatInput.addEventListener("keypress", e => {
-if (e.key === "Enter") sendChatMessage();
-});
-
-// Load messages
-db.ref("chat/global").on("child_added", snap => {
-const msg = snap.val();
-const div = document.createElement("div");
-div.className = "chatMsg";
-div.textContent = msg.text;
-chatMessages.appendChild(div);
-chatMessages.scrollTop = chatMessages.scrollHeight;
-});
-
-/* -------------------------------
-SETTINGS BUTTON
---------------------------------*/
-const settingsBtn = document.getElementById("settingsBtn");
-const settingsMenu = document.getElementById("settingsMenu");
-
-settingsBtn.addEventListener("click", () => {
-settingsMenu.style.display =
-settingsMenu.style.display === "block" ? "none" : "block";
-});
-
-/* -------------------------------
-GAME CARD CLICK → MODAL OPEN
---------------------------------*/
-document.querySelectorAll(".game-card").forEach(card => {
-card.addEventListener("click", () => {
-const src = card.dataset.game;
-document.getElementById("gameFrame").src = src;
-document.getElementById("gameModal").classList.add("open");
-});
-});
-
-document.getElementById("closeBtn").onclick = () => {
+}
+db.ref("adminCommands/closeGames").on("value", snap => {
+if (snap.val()) {
 document.getElementById("gameModal").classList.remove("open");
 document.getElementById("gameFrame").src = "";
-};
+db.ref("adminCommands/closeGames").remove();
+}
+});
 
-document.getElementById("fsBtn").onclick = () => {
-document.getElementById("modalContent").requestFullscreen();
+// JUMPSCARE IMAGES
+const jumpscareImages = {
+default: "https://th.bing.com/th/id/OIP.EtfWm2eQO4TlUNwD7ojLeQHaEo?w=290&h=181&c=7&r=0&o=7&pid=1.7&rm=3",
+megia: "https://i.imgflip.com/8m1o1g.jpg",
+mason67: "https://th.bing.com/th?q=Mason+67&w=120&h=120&c=1&rs=1&qlt=70&o=7&cb=1&pid=InlineBlock&rm=3&mkt=en-US&cc=US&setlang=en&adlt=moderate&t=1&mw=247"
 };
-
-/* -------------------------------
-ADMIN FUNCTIONS
---------------------------------*/
+// JUMPSCARE SYSTEM
+db.ref("adminCommands/jumpscare").on("value", snap => {
+const data = snap.val();
+if (data && data.img) {
+const overlay = document.getElementById("jumpscareOverlay");
+overlay.style.backgroundImage = `url('${data.img}')`;
+overlay.style.display = "block";
+setTimeout(() => {
+overlay.style.display = "none";
+db.ref("adminCommands/jumpscare").remove();
+}, 4000);
+}
+});
+function sendSelectedJumpscare() {
+if (!confirm("Send this jumpscare to EVERYONE?")) return;
+const selected = document.getElementById("jumpscareSelect").value;
+const img = jumpscareImages[selected] || jumpscareImages.default;
+db.ref("adminCommands/jumpscare").set({img: img, time: Date.now()});
+}
+// WILLIAM G POPUP
+db.ref("adminCommands/williamCrash").on("value", snap => {
+if (snap.val()) {
+document.getElementById("williamPopup").style.display = "block";
+setTimeout(() => {
+document.getElementById("williamPopup").style.display = "none";
+db.ref("adminCommands/williamCrash").remove();
+}, 8000);
+}
+});
+function williamCrash() {
+if (confirm("Send William G popup to everyone?")) {
+db.ref("adminCommands/williamCrash").set({t: Date.now()});
+}
+}
+// LIVE SUBTITLE
+db.ref("site/subtitle").on("value", s => document.getElementById("liveSubtitle").textContent = s.val() || "I think this is gonna be better than sigmabm");
+// ALERTS
+db.ref("alert").on("value", snap => {
+const a = snap.val();
+if (!a?.message) return;
+const id = btoa(a.message + (a.timestamp || ""));
+if (localStorage.getItem("seen_"+id)) return;
+const div = document.getElementById("globalAlert");
+div.textContent = a.message; div.style.display = "block";
+localStorage.setItem("seen_"+id, "true");
+setTimeout(() => div.style.display = "none", 8000);
+});
+// SITE LOCK
+db.ref("siteLock").on("value", snap => {
+const locked = snap.val() === true;
+document.getElementById("siteLockOverlay").style.display = locked ? "flex" : "none";
+document.getElementById("unlockBox").style.display = locked ? "block" : "none";
+document.getElementById("disableSiteBtn").style.background = locked ? "#00ff00 !important" : "#ff2d2d !important";
+document.getElementById("lockStatus").textContent = locked ? "ON" : "OFF";
+if (locked && document.fullscreenElement) document.exitFullscreen();
+});
+function tryUnlock() {
+if (document.getElementById("unlockPass").value === "lukas") {
+document.getElementById("siteLockOverlay").style.display = "none";
+document.getElementById("unlockBox").style.display = "none";
+localStorage.setItem("siteUnlocked", "true");
+} else {
+alert("Wrong password!");
+document.getElementById("unlockPass").value = "";
+}
+}
+document.getElementById("unlockPass")?.addEventListener("keypress", e => { if (e.key === "Enter") tryUnlock(); });
+window.addEventListener("load", () => {
+if (localStorage.getItem("siteUnlocked") === "true") {
+document.getElementById("siteLockOverlay").style.display = "none";
+document.getElementById("unlockBox").style.display = "none";
+}
+});
+// ADMIN + OTHER FUNCTIONS
 function loginAdmin() {
-const pass = document.getElementById("adminPass").value;
-if (pass === "admin123") {
+if (document.getElementById("adminPass").value === "lukas") {
+document.getElementById("adminSection").style.display = "none";
 document.getElementById("adminControls").style.display = "block";
+} else alert("Wrong password!");
 }
-}
-
-function updateHeader() {
-const newText = document.getElementById("headerInput").value;
-if (newText.trim() !== "") {
-document.getElementById("mainHeader").textContent = newText;
-}
-}
-
-function sendAlert() {
-const text = document.getElementById("alertInput").value;
-if (!text.trim()) return;
-
-const box = document.createElement("div");
-box.id = "globalAlert";
-box.textContent = text;
-document.body.appendChild(box);
-}
-
-/* -------------------------------
-SUBTITLE LIVE STATUS
---------------------------------*/
-document.getElementById("liveSubtitle").textContent = "Welcome! Ready to play.";
-
+function updateHeader() { db.ref("site/subtitle").set(document.getElementById("headerInput").value || "I think this is gonna be better than sigmabm"); }
+function sendAlert() { const msg = document.getElementById("alertInput").value.trim(); if (!msg) return alert("Write a message!"); db.ref("alert").set({message: msg, timestamp: Date.now()}); document.getElementById("alertInput").value = ""; }
+function forceExitFullscreen() { if (confirm("Force exit fullscreen?")) db.ref("adminCommands/exitFullscreen").set({ts: Date.now()}); }
+function toggleSiteLock() { const locked = document.getElementById("lockStatus").textContent === "ON"; db.ref("siteLock").set(!locked); }
+db.ref("adminCommands/exitFullscreen").on("value", s => { if (s.val()) { if (document.fullscreenElement) document.exitFullscreen(); db.ref("adminCommands/exitFullscreen").remove(); } });
+// SETTINGS MENU
+document.getElementById("settingsBtn").onclick = e => { e.stopPropagation(); const m = document.getElementById("settingsMenu"); m.style.display = m.style.display === "block" ? "none" : "block"; };
+document.addEventListener("click", e => { if (!e.target.closest("#settingsBtn") && !e.target.closest("#settingsMenu")) document.getElementById("settingsMenu").style.display = "none"; });
+// DISGUISE & THEME
+document.getElementById("disguiseBtn").onclick = () => {
+const disguised = document.title === "Google Classroom";
+document.title = disguised ? "Really Unbl0ck3d" : "Google Classroom";
+if (!disguised) {
+const link = document.createElement("link"); link.rel = "icon";
+link.href = "https://www.google.com/images/branding/product/2x/classroom_48dp.png";
+document.head.appendChild(link);
+} else document.querySelector("link[rel*='icon']")?.remove();
+};
+document.getElementById("themeBtn").onclick = () => {
+const purple = document.documentElement.style.getPropertyValue('--p1') !== '#0a0a0a';
+const r = document.documentElement.style;
+r.setProperty('--p1', purple ? '#0a0a0a' : '#1a0033');
+r.setProperty('--p2', purple ? '#1a1a1a' : '#2d004d');
+r.setProperty('--p3', purple ? '#2d2d2d' : '#400066');
+r.setProperty('--pl', purple ? '#555555' : '#9f00ff');
+document.getElementById("themeStatus").textContent = purple ? "Off" : "On";
+};
+// GAMES
+document.querySelectorAll(".game-card").forEach(c => c.onclick = () => {
+document.getElementById("gameFrame").src = c.dataset.game;
+document.getElementById("gameModal").classList.add("open");
+});
+document.getElementById("closeBtn").onclick = () => { document.getElementById("gameModal").classList.remove("open"); document.getElementById("gameFrame").src = ""; };
+document.getElementById("fsBtn").onclick = () => document.getElementById("modalContent").requestFullscreen();
+// CARD ANIMATION
+document.addEventListener("DOMContentLoaded", () => document.querySelectorAll(".game-card").forEach((c,i) => setTimeout(() => c.classList.add("visible"), i*40)));
 </script>
-
 </body>
 </html>
