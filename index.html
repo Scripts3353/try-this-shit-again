@@ -16,7 +16,7 @@
       --txt:#e8eaf6; --card:rgba(255,255,255,.06); --card-hov:rgba(255,255,255,.12);
     }
     *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;}
-    body{background:linear-gradient(135deg,var(--p1),var(--p2));color:var(--txt);min-height:100vh;background-attachment:fixed;}
+    body{background:linear-gradient(135deg,var(--p1),var(--p2));color:var(--txt);min-height:100vh;background-attachment:fixed;overflow-x:hidden;}
     header{text-align:center;padding:2rem 1rem;background:rgba(26,26,26,.4);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.1);}
     h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#bbbbbb,#888888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem;}
     .subtitle{font-size:1.1rem;opacity:.9;max-width:600px;margin:0 auto;}
@@ -24,8 +24,6 @@
     .tab-buttons{display:flex;justify-content:center;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
     .tab-btn{background:rgba(255,255,255,.08);border:none;color:#fff;padding:.8rem 1.5rem;font-size:1rem;border-radius:50px;cursor:pointer;transition:all .3s;backdrop-filter:blur(5px);}
     .tab-btn:hover,.tab-btn.active{background:var(--pl);transform:translateY(-2px);box-shadow:0 4px 15px rgba(85,85,85,.4);}
-    .tab-content{display:none;}
-    .tab-content.active{display:block;}
     .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem;padding:1rem 0;}
     .game-card{background:var(--card);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);text-align:center;position:relative;opacity:0;transform:translateY(20px);}
     .game-card.visible{opacity:1;transform:translateY(0);transition:all .6s ease-out;}
@@ -41,64 +39,46 @@
     .modal-bar button:hover{background:var(--pl);}
     #gameFrame{width:100%;height:calc(100% - 50px);border:none;background:#000;}
 
-    /* Settings Button & Menu */
+    /* SETTINGS */
     #settingsBtn{position:fixed;top:1rem;right:1rem;z-index:9998;cursor:pointer;}
     #settingsBtn svg{stroke:#aaa;transition:.2s;}
     #settingsBtn:hover svg{stroke:#fff;transform:scale(1.1);}
-    #settingsMenu{display:none;position:fixed;top:4.5rem;right:1rem;width:300px;background:var(--p2);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.2rem;z-index:9997;backdrop-filter:blur(12px);box-shadow:0 12px 30px rgba(0,0,0,.5);}
+    #settingsMenu{display:none;position:fixed;top:4.5rem;right:1rem;width:300px;background:var(--p2);border:1px solid rgba(255,255,255,255,.1);border-radius:16px;padding:1.2rem;z-index:9997;backdrop-filter:blur(12px);box-shadow:0 12px 30px rgba(0,0,0,.5);}
     #settingsMenu button{width:100%;padding:.9rem;margin:.5rem 0;background:var(--card);border:none;color:#fff;border-radius:12px;cursor:pointer;transition:.25s;font-weight:500;}
     #settingsMenu button:hover{background:var(--card-hov);}
     #adminSection{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.1);}
-    #adminLoginForm input{width:100%;padding:.8rem;margin:.5rem 0;background:#333;color:#fff;border:none;border-radius:12px;}
-    #adminLoginForm button{background:#9f00ff !important;}
+    #adminControls input,#adminControls textarea,#adminControls button{width:100%;padding:.8rem;margin:.4rem 0;border-radius:12px;border:none;outline:none;}
+    #adminControls input,#adminControls textarea{background:#333;color:#fff;}
+    #adminControls button{background:#9f00ff;color:#fff;font-weight:bold;cursor:pointer;}
+    #adminControls button:hover{background:#c300ff;}
 
-  /* GLOBAL ALERT – PURPLE + SMOOTH FADE OUT */
-#globalAlert{
-  display:none;
-  position:fixed;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#9f00ff;           /* Pure purple */
-  color:#fff;
-  padding:1rem 2rem;
-  border-radius:16px;
-  z-index:9999999;
-  box-shadow:0 10px 30px rgba(159,0,255,0.4);
-  font-size:1.1rem;
-  font-weight:600;
-  text-align:center;
-  min-width:300px;
-  backdrop-filter:blur(10px);
-  border:2px solid rgba(255,255,255,0.2);
-  animation:slideDown 0.5s ease, fadeOut 1s ease 7s forwards;
-}
+    /* PURPLE ALERT */
+    #globalAlert{
+      display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);
+      background:#9f00ff;color:#fff;padding:1rem 2.5rem;border-radius:16px;
+      z-index:9999999;box-shadow:0 10px 30px rgba(159,0,255,0.4);
+      font-size:1.1rem;font-weight:600;text-align:center;min-width:300px;
+      backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,0.2);
+      animation:slideDown 0.5s ease, fadeOut 1s ease 7s forwards;
+    }
+    @keyframes slideDown{from{top:-100px;opacity:0;}to{top:20px;opacity:1;}}
+    @keyframes fadeOut{to{opacity:0;transform:translateX(-50%) translateY(-20px);}}
 
-@keyframes slideDown{
-  from{top:-100px;opacity:0;}
-  to{top:20px;opacity:1;}
-}
-@keyframes fadeOut{
-  to{opacity:0;transform:translateX(-50%) translateY(-20px);}
-}
+    @media(max-width:768px){h1{font-size:2.2rem;}}
   </style>
 </head>
 <body>
 
   <!-- SETTINGS BUTTON -->
   <div id="settingsBtn">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-    </svg>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
   </div>
 
-  <!-- SETTINGS MENU (NOW INCLUDES ADMIN) -->
+  <!-- SETTINGS MENU (Admin is inside here now) -->
   <div id="settingsMenu">
     <h3 style="color:#fff;text-align:center;margin-bottom:1rem;">Settings</h3>
     <button id="disguiseBtn">Disguise as Google Classroom</button>
     <button id="themeBtn">Purple Theme: <span id="themeStatus">Off</span></button>
-    <button id="fsModeBtn">Force Fullscreen: <span id="fsStatus">Off</span></button>
     <button id="clearCacheBtn" style="background:#b71c1c;">Clear Site Cache</button>
 
     <div id="adminSection">
@@ -107,25 +87,23 @@
       <button onclick="loginAdmin()">Enter Admin Panel</button>
     </div>
 
-   <div id="adminControls" style="display:none;">
+    <div id="adminControls" style="display:none;">
       <hr style="border-color:rgba(255,255,255,.1);margin:1rem 0;">
       <p style="color:#9f00ff;font-weight:bold;">Admin Controls</p>
-      
-      <input type="text" id="headerInput" placeholder="New header text..." style="margin-bottom:.5rem;">
+      <input type="text" id="headerInput" placeholder="New header text...">
       <button onclick="updateHeader()">Update Header (Live)</button>
-      
-      <textarea id="alertInput" placeholder="Alert message for everyone..." rows="2" style="margin-top:.5rem;"></textarea>
+      <textarea id="alertInput" placeholder="Alert message..." rows="2"></textarea>
       <button onclick="sendAlert()">Send Global Alert</button>
-
-      <!-- NEW BUTTON: FORCE EXIT FULLSCREEN FOR ALL USERS -->
-      <button onclick="forceExitFullscreen()" style="background:#ff4444 !important;margin-top:.8rem;">
+      <button onclick="forceExitFullscreen()" style="background:#ff4444;margin-top:.8rem;">
         Force Exit Fullscreen (Everyone)
       </button>
     </div>
+  </div>
 
-  <!-- GLOBAL ALERT -->
+  <!-- PURPLE ALERT -->
   <div id="globalAlert"></div>
 
+  <!-- MAIN CONTENT -->
   <header>
     <h1>Really Unbl0ck3d</h1>
     <p class="subtitle" id="liveSubtitle">Loading...</p>
@@ -133,10 +111,12 @@
 
   <div class="container">
     <div class="tab-buttons">
-      <button class="tab-btn active" onclick="openTab('games')">All Games</button>
+      <button class="tab-btn active" onclick="document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.getElementById('games').classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">
+        All Games
+      </button>
     </div>
 
-  <!-- GAMES TAB -->
+      <!-- GAMES TAB -->
     <div id="games" class="tab-content active">
       <div class="game-grid">
         <!-- ALL YOUR GAME CARDS -->
@@ -398,13 +378,14 @@
         </div>
       </div>
     </div>
+
   <footer>
     <p>Hosted on Vercel • <a href="#" onclick="openGame('games/COMMENTS.html');return false;">Suggest a Game</a></p>
   </footer>
 
   <!-- GAME MODAL -->
   <div id="gameModal">
-    <div class="modal-content" id="modalContent" allowfullscreen>
+    <div class="modal-content" id="modalContent">
       <div class="modal-bar">
         <button id="fsBtn">Fullscreen</button>
         <button id="closeBtn">Close</button>
@@ -414,7 +395,6 @@
   </div>
 
   <script>
-    // YOUR FIREBASE CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyDXgY2UX4INpw6eSyjNSC-kUQLH9GQbPOA",
       authDomain: "really-unblocked-admin.firebaseapp.com",
@@ -429,63 +409,49 @@
     const db = firebase.database();
 
     // Live subtitle
-    db.ref("site/subtitle").on("value", s => {
-      document.getElementById("liveSubtitle").textContent = s.val() || "I think this is gonna be better than sigmabm";
-    });
+    db.ref("site/subtitle").on("value", s => document.getElementById("liveSubtitle").textContent = s.val() || "I think this is gonna be better than sigmabm");
 
-    // Global alerts
+    // Purple alert with fade
     db.ref("alert").on("value", s => {
       const a = s.val();
+      const div = document.getElementById("globalAlert");
       if (a && a.message) {
-        const div = document.getElementById("globalAlert");
         div.textContent = a.message;
         div.style.display = "block";
-        setTimeout(() => div.style.display = "none", a.duration || 8000);
+        setTimeout(() => div.style.display = "none", 8000);
       }
     });
 
-    // Admin login inside settings
+    // Force exit fullscreen
+    db.ref("adminCommands/exitFullscreen").on("value", snap => {
+      if (snap.val()) {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+        }
+        db.ref("adminCommands/exitFullscreen").remove();
+      }
+    });
+
     function loginAdmin() {
       if (document.getElementById("adminPass").value === "lukas") {
         document.getElementById("adminSection").style.display = "none";
         document.getElementById("adminControls").style.display = "block";
       } else alert("Wrong password!");
     }
-
-    function updateHeader() {
-      const text = document.getElementById("headerInput").value || "I think this is gonna be better than sigmabm";
-      db.ref("site/subtitle").set(text);
-    }
-
+    function updateHeader() { db.ref("site/subtitle").set(document.getElementById("headerInput").value || "I think this is gonna be better than sigmabm"); }
     function sendAlert() {
       const msg = document.getElementById("alertInput").value.trim();
       if (!msg) return alert("Write a message!");
       db.ref("alert").set({message: msg, duration: 10000});
       document.getElementById("alertInput").value = "";
     }
-
     function forceExitFullscreen() {
-      if (confirm("Force exit fullscreen for EVERYONE now?")) {
-        db.ref("adminCommands/exitFullscreen").set({
-          timestamp: Date.now()
-        });
-        alert("Forced exit fullscreen sent to all users!");
+      if (confirm("Force exit fullscreen for EVERYONE?")) {
+        db.ref("adminCommands/exitFullscreen").set({timestamp: Date.now()});
       }
     }
 
-    // Listen for the force-exit command (runs on every user's browser)
-    db.ref("adminCommands/exitFullscreen").on("value", snap => {
-      if (snap.val()) {
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-          if (document.exitFullscreen) document.exitFullscreen();
-          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-        }
-        // Also closes browser F11 fullscreen on most browsers
-        db.ref("adminCommands/exitFullscreen").remove(); // clear command
-      }
-    });
-
-    // Settings toggle
+    // Settings menu toggle
     document.getElementById("settingsBtn").onclick = e => {
       e.stopPropagation();
       const m = document.getElementById("settingsMenu");
@@ -496,21 +462,16 @@
         document.getElementById("settingsMenu").style.display = "none";
     });
 
-    // Your original features (disguise, theme, fullscreen, etc.)
+    // Disguise & Theme
     let disguised = false;
     document.getElementById("disguiseBtn").onclick = () => {
-      if (!disguised) {
-        document.title = "Google Classroom";
-        let l = document.createElement("link"); l.rel = "icon";
-        l.href = "https://www.google.com/images/branding/product/2x/classroom_48dp.png";
-        document.head.appendChild(l);
-      } else {
-        document.title = "Really Unbl0ck3d";
-        document.querySelector("link[rel*='icon']").href = "data:,";
-      }
       disguised = !disguised;
+      document.title = disguised ? "Google Classroom" : "Really Unbl0ck3d";
+      const link = document.querySelector("link[rel*='icon']") || document.createElement("link");
+      link.rel = "icon";
+      link.href = disguised ? "https://www.google.com/images/branding/product/2x/classroom_48dp.png" : "data:,";
+      if (!disguised) document.head.removeChild(link); else document.head.appendChild(link);
     };
-
     let purple = false;
     document.getElementById("themeBtn").onclick = () => {
       purple = !purple;
@@ -521,12 +482,11 @@
       document.getElementById("themeStatus").textContent = purple ? "On" : "Off";
     };
 
-    // Game modal & cards
-    document.querySelectorAll(".game-card").forEach(c => c.onclick = () => openGame(c.dataset.game));
-    function openGame(p) {
-      document.getElementById("gameFrame").src = p;
+    // Game modal
+    document.querySelectorAll(".game-card").forEach(c => c.onclick = () => {
+      document.getElementById("gameFrame").src = c.dataset.game;
       document.getElementById("gameModal").classList.add("open");
-    }
+    });
     document.getElementById("closeBtn").onclick = () => {
       document.getElementById("gameModal").classList.remove("open");
       document.getElementById("gameFrame").src = "";
