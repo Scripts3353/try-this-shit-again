@@ -16,22 +16,19 @@
       --txt:#e8eaf6; --card:rgba(255,255,255,.06); --card-hov:rgba(255,255,255,.12);
     }
     *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;}
-    body{background:linear-gradient(135deg,var(--p1),var(--p2));color:var(--txt);min-height:100vh;background-attachment:fixed;overflow-x:hidden;}
+    body{background:linear-gradient(135deg,var(--p1),var(--p2));color:var(--txt);min-height:100vh;overflow-x:hidden;position:relative;}
     header{text-align:center;padding:2rem 1rem;background:rgba(26,26,26,.4);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.1);}
     h1{font-size:2.8rem;font-weight:700;background:linear-gradient(to right,#bbbbbb,#888888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem;}
     .subtitle{font-size:1.1rem;opacity:.9;max-width:600px;margin:0 auto;}
     .container{max-width:1200px;margin:2rem auto;padding:0 1rem;}
-    .tab-buttons{display:flex;justify-content:center;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
-    .tab-btn{background:rgba(255,255,255,.08);border:none;color:#fff;padding:.8rem 1.5rem;font-size:1rem;border-radius:50px;cursor:pointer;transition:all .3s;backdrop-filter:blur(5px);}
-    .tab-btn:hover,.tab-btn.active{background:var(--pl);transform:translateY(-2px);box-shadow:0 4px 15px rgba(85,85,85,.4);}
     .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem;padding:1rem 0;}
-    .game-card{background:var(--card);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);text-align:center;position:relative;opacity:0;transform:translateY(20px);}
+    .game-card{background:var(--card);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);text-align:center;opacity:0;transform:translateY(20px);}
     .game-card.visible{opacity:1;transform:translateY(0);transition:all .6s ease-out;}
     .game-card:hover{transform:translateY(-8px) scale(1.03);box-shadow:0 12px 25px rgba(0,0,0,.3);background:var(--card-hov);}
     .game-card img{width:100%;height:120px;object-fit:cover;border-bottom:1px solid rgba(255,255,255,.1);}
     .game-card h3{padding:.8rem .5rem 1rem;font-size:.95rem;font-weight:600;color:#fff;line-height:1.3;}
     footer{text-align:center;padding:2rem 1rem;margin-top:3rem;opacity:.8;font-size:.9rem;}
-    #gameModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:1rem;}
+    #gameModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;}
     #gameModal.open{display:flex;}
     .modal-content{position:relative;width:100%;max-width:1100px;height:90vh;background:#111;border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(85,85,85,.6);}
     .modal-bar{display:flex;justify-content:flex-end;padding:.5rem 1rem;background:var(--p3);gap:.5rem;}
@@ -46,7 +43,6 @@
     #settingsMenu{display:none;position:fixed;top:4.5rem;right:1rem;width:320px;background:var(--p2);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.2rem;z-index:9997;backdrop-filter:blur(12px);box-shadow:0 12px 30px rgba(0,0,0,.5);}
     #settingsMenu button{width:100%;padding:.9rem;margin:.5rem 0;background:var(--card);border:none;color:#fff;border-radius:12px;cursor:pointer;transition:.25s;font-weight:500;}
     #settingsMenu button:hover{background:var(--card-hov);}
-    #adminSection{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.1);}
     #adminControls input,#adminControls textarea{width:100%;padding:.8rem;margin:.4rem 0;border-radius:12px;background:#333;color:#fff;border:none;outline:none;}
     #adminControls button{margin-top:.6rem;background:#9f00ff !important;color:#fff;font-weight:bold;}
     #adminControls button:hover{background:#c300ff !important;}
@@ -56,33 +52,75 @@
     @keyframes slideDown{from{top:-100px;opacity:0;}to{top:20px;opacity:1;}}
     @keyframes fadeOut{to{opacity:0;transform:translateX(-50%) translateY(-20px);}}
 
-    /* SITE LOCK SCREEN */
-    #siteLockOverlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0a0a0a;z-index:99999999;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-family:Segoe UI,sans-serif;}
-    #siteLockOverlay h1{font-size:3.8rem;margin-bottom:1rem;background:linear-gradient(to right,#ff5555,#ff00aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-    #siteLockOverlay h2{font-size:2.2rem;opacity:.9;}
-    #unlockPass{padding:1rem 1.5rem;font-size:1.2rem;border-radius:12px;border:none;background:#333;color:#fff;width:320px;text-align:center;margin-top:2rem;}
+    /* SITE LOCK SCREEN - BLACK/GREY GRADIENT + MOVING STARS */
+    #siteLockOverlay{
+      display:none;
+      position:fixed;top:0;left:0;width:100vw;height:100vh;
+      background:linear-gradient(135deg,#0a0a0a,#2d2d2d);
+      z-index:99999999;
+      align-items:center;justify-content:center;
+      flex-direction:column;
+      color:#fff;
+      overflow:hidden;
+    }
+    #siteLockOverlay::before{
+      content:"";
+      position:absolute;top:0;left:0;width:200%;height:200%;
+      background:radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size:50px 50px;
+      animation:stars 120s linear infinite;
+      pointer-events:none;
+    }
+    @keyframes stars{
+      0%{transform:translate(0,0);}
+      100%{transform:translate(-100%,-100%);}
+    }
+    #siteLockOverlay h1{
+      font-size:4rem;
+      background:linear-gradient(to right,#ff5555,#ff00aa);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:1rem;
+      z-index:2;
+    }
+    #siteLockOverlay h2{
+      font-size:2.2rem;
+      opacity:.9;
+      margin-bottom:3rem;
+      z-index:2;
+    }
+    #lockStatusBtn{
+      padding:1.2rem 3rem;
+      font-size:1.4rem;
+      font-weight:bold;
+      border:none;
+      border-radius:16px;
+      cursor:default;
+      background:#ff2d2d;
+      color:white;
+      z-index:2;
+    }
+    #lockStatusBtn.active{background:#00ff00 !important;}
   </style>
 </head>
 <body>
 
-  <!-- SITE LOCK OVERLAY (Be Right Back) -->
+  <!-- SITE LOCK SCREEN (Be Right Back + Stars) -->
   <div id="siteLockOverlay">
     <h1>Really Unbl0ck3d</h1>
     <h2>Be right back...</h2>
-    <div>
-      <input type="password" id="unlockPass" placeholder="Admin password to unlock">
-      <button onclick="if(document.getElementById('unlockPass').value==='lukas')document.getElementById('siteLockOverlay').style.display='none';else alert('Wrong password!')" style="margin-top:1rem;padding:1rem 2rem;background:#9f00ff;color:#fff;border:none;border-radius:12px;font-size:1.2rem;cursor:pointer;">
-        Unlock Site
-      </button>
-    </div>
+    <button id="lockStatusBtn">Site Locked</button>
   </div>
 
   <!-- SETTINGS BUTTON -->
   <div id="settingsBtn">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
   </div>
 
-  <!-- SETTINGS MENU + ADMIN PANEL -->
+  <!-- SETTINGS + ADMIN PANEL -->
   <div id="settingsMenu">
     <h3 style="color:#fff;text-align:center;margin-bottom:1rem;">Settings</h3>
     <button id="disguiseBtn">Disguise as Google Classroom</button>
@@ -120,12 +158,7 @@
     <p class="subtitle" id="liveSubtitle">Loading...</p>
   </header>
 
-  <div class="container">
-    <div class="tab-buttons">
-      <button class="tab-btn active">All Games</button>
-    </div>
-
-         <!-- GAMES TAB -->
+      <!-- GAMES TAB -->
     <div id="games" class="tab-content active">
       <div class="game-grid">
         <!-- ALL YOUR GAME CARDS -->
@@ -411,8 +444,7 @@
       projectId: "really-unblocked-admin",
       storageBucket: "really-unblocked-admin.firebasestorage.app",
       messagingSenderId: "218277380842",
-      appId: "1:218277380842:web:37a7f000d49d765077cd93",
-      measurementId: "G-TZ64HBEWMF"
+      appId: "1:218277380842:web:37a7f000d49d765077cd93"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -420,23 +452,27 @@
     // Live subtitle
     db.ref("site/subtitle").on("value", s => document.getElementById("liveSubtitle").textContent = s.val() || "I think this is gonna be better than sigmabm");
 
-    // Purple alert — only once per user
+    // Purple alert (once per user)
     db.ref("alert").on("value", snap => {
       const a = snap.val();
       if (!a?.message) return;
-      const alertId = btoa(a.message + a.timestamp);
-      if (localStorage.getItem("seen_" + alertId)) return;
+      const id = btoa(a.message + a.timestamp);
+      if (localStorage.getItem("seen_"+id)) return;
       const div = document.getElementById("globalAlert");
       div.textContent = a.message;
       div.style.display = "block";
-      localStorage.setItem("seen_" + alertId, "true");
+      localStorage.setItem("seen_"+id, "true");
       setTimeout(() => div.style.display = "none", 8000);
     });
 
-    // Site lock
-    db.ref("siteLock").on("value", s => {
-      const locked = s.val() === true;
-      document.getElementById("siteLockOverlay").style.display = locked ? "flex" : "none";
+    // SITE LOCK - INSTANT FOR EVERYONE
+    db.ref("siteLock").on("value", snap => {
+      const locked = snap.val() === true;
+      const overlay = document.getElementById("siteLockOverlay");
+      const btn = document.getElementById("lockStatusBtn");
+      overlay.style.display = locked ? "flex" : "none";
+      btn.textContent = locked ? "Site Locked" : "";
+      btn.classList.toggle("active", locked);
       if (locked && document.fullscreenElement) document.exitFullscreen();
     });
 
@@ -462,28 +498,28 @@
       document.getElementById("alertInput").value = "";
     }
     function forceExitFullscreen() {
-      if (confirm("Force exit fullscreen for everyone?")) {
-        db.ref("adminCommands/exitFullscreen").set({ts: Date.now()});
-      }
+      if (confirm("Force exit fullscreen for everyone?")) db.ref("adminCommands/exitFullscreen").set({ts: Date.now()});
     }
     function toggleSiteLock() {
-      const newState = !(document.getElementById("lockStatus").textContent === "ON");
+      const currentlyLocked = document.getElementById("lockStatus").textContent === "ON";
+      const newState = !currentlyLocked;
       db.ref("siteLock").set(newState);
       document.getElementById("lockStatus").textContent = newState ? "ON" : "OFF";
+      document.getElementById("disableSiteBtn").style.background = newState ? "#00ff00 !important" : "#ff2d2d !important";
     }
 
     // Settings menu
     document.getElementById("settingsBtn").onclick = e => { e.stopPropagation(); const m = document.getElementById("settingsMenu"); m.style.display = m.style.display === "block" ? "none" : "block"; };
     document.addEventListener("click", e => { if (!e.target.closest("#settingsBtn") && !e.target.closest("#settingsMenu")) document.getElementById("settingsMenu").style.display = "none"; });
 
-    // Disguise & Theme
+    // Disguise & Purple Theme
     let disguised = false;
     document.getElementById("disguiseBtn").onclick = () => {
       disguised = !disguised;
       document.title = disguised ? "Google Classroom" : "Really Unbl0ck3d";
       const link = document.querySelector("link[rel*='icon']") || document.createElement("link");
       link.rel = "icon"; link.href = disguised ? "https://www.google.com/images/branding/product/2x/classroom_48dp.png" : "data:,";
-      if (disguised) document.head.appendChild(link); else document.head.querySelector("link[rel*='icon']").remove();
+      disguised ? document.head.appendChild(link) : document.head.querySelector("link[rel*='icon']").remove();
     };
     let purple = false;
     document.getElementById("themeBtn").onclick = () => {
