@@ -4,303 +4,213 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>unblocked.lol</title>
-  <meta name="description" content="The dopest unblocked games hub on the net."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #0a0a0a;
-      --sidebar: #111111ee;
-      --card: #161616dd;
-      --accent: #00ffaa;
-      --accent2: #00cc88;
-      --text: #e0e0e0;
-      --text-dim: #888;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Rajdhani', sans-serif;
-      overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 20% 80%, rgba(0,255,170,0.12) 0%, transparent 40%),
-        radial-gradient(circle at 80% 20%, rgba(0,255,170,0.1) 0%, transparent 40%),
-        repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(0,255,170,0.02) 40px, rgba(0,255,170,0.02) 80px);
-    }
+    :root{--bg:#0a0a0a;--sidebar:#111111ee;--card:#161616dd;--accent:#00ffaa;--text:#e0e0e0;--text-dim:#888}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;background-image:radial-gradient(circle at 20% 80%,rgba(0,255,170,0.12),transparent 40%),radial-gradient(circle at 80% 20%,rgba(0,255,170,0.1),transparent 40%)}
+    
+    .sidebar-toggle{position:fixed;top:20px;left:20px;z-index:1000;background:var(--accent);color:#000;padding:12px 16px;border-radius:12px;font-size:1.4rem;cursor:pointer;box-shadow:0 10px 30px rgba(0,255,170,0.5);transition:all .3s}
+    .sidebar-toggle:hover{transform:scale(1.1)}
+    .sidebar{position:fixed;left:-320px;top:0;bottom:0;width:300px;background:var(--sidebar);backdrop-filter:blur(20px);border-right:1px solid rgba(0,255,170,0.2);padding:2.5rem 1.5rem;z-index:999;overflow:hidden;transition:left .4s cubic-bezier(.25,.46,.45,.94)}
+    .sidebar.open{left:0}
+    .sidebar-content{overflow-y:auto;height:100%;padding-right:10px;scrollbar-width:none}
+    .sidebar-content::-webkit-scrollbar{display:none}
+    .logo{font-family:'Orbitron',sans-serif;font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#00cc88);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:2rem;text-shadow:0 0 30px rgba(0,255,170,0.5)}
+    .search-box{width:100%;padding:0.9rem 1.2rem;margin-bottom:2rem;background:rgba(255,255,255,0.05);border:1px solid rgba(0,255,170,0.4);border-radius:50px;color:white;font-size:1rem;outline:none;transition:all .3s}
+    .search-box:focus{border-color:var(--accent);box-shadow:0 0 20px rgba(0,255,170,0.4)}
+    .game-item a{display:flex;align-items:center;padding:1rem 1.2rem;color:var(--text-dim);text-decoration:none;border-radius:12px;transition:all .3s}
+    .game-item a:hover{background:rgba(0,255,170,0.12);color:white;padding-left:1.6rem}
+    
+    .main{padding:2rem;min-height:100vh}
+    @media (min-width:901px){.main{padding:3rem}}
+    .header{text-align:center;margin-bottom:4rem}
+    .header h1{font-family:'Orbitron',sans-serif;font-size:4.8rem;background:linear-gradient(90deg,var(--accent),#00ffdd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .header p{font-size:1.4rem;color:var(--text-dim)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2rem;max-width:1400px;margin:0 auto}
+    .card{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid rgba(0,255,170,0.2);transition:all .4s cubic-bezier(.175,.885,.32,1.2);cursor:pointer;position:relative}
+    .card:hover{transform:translateY(-15px) scale(1.03);border-color:var(--accent);box-shadow:0 25px 50px rgba(0,255,170,0.25)}
+    .thumb{height:200px;background:#000;position:relative;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover;opacity:0.9;transition:opacity .4s}
+    .card:hover .thumb img{opacity:1}
+    .info{padding:1.5rem;text-align:center}
+    .title{font-family:'Orbitron',sans-serif;font-size:1.5rem;margin-bottom:0.5rem;color:var(--accent)}
+    .play-btn{display:block;margin:1rem auto 0;padding:12px 32px;background:var(--accent);color:#000;font-weight:bold;border-radius:50px;width:fit-content;box-shadow:0 0 20px rgba(0,255,170,0.6);transition:all .3s}
+    .play-btn:hover{transform:scale(1.12);box-shadow:0 0 35px rgba(0,255,170,0.9)}
 
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      left: 0; top: 0; bottom: 0;
-      width: 280px;
-      background: var(--sidebar);
-      backdrop-filter: blur(20px);
-      border-right: 1px solid rgba(0,255,170,0.2);
-      padding: 2rem 1.5rem;
-      z-index: 100;
-      overflow-y: auto;
-    }
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2.8rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-align: center;
-      margin-bottom: 2rem;
-      text-shadow: 0 0 30px rgba(0,255,170,0.5);
-    }
-    .search-box {
-      width: 100%;
-      padding: 0.9rem 1.2rem;
-      margin-bottom: 2rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(0,255,170,0.4);
-      border-radius: 50px;
-      color: white;
-      font-size: 1rem;
-      outline: none;
-      transition: all 0.3s;
-    }
-    .search-box:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 20px rgba(0,255,170,0.4);
-    }
-    .nav-title {
-      color: var(--accent);
-      font-size: 1.1rem;
-      margin: 1.5rem 0 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-    .game-list {
-      list-style: none;
-    }
-    .game-item {
-      margin-bottom: 0.4rem;
-    }
-    .game-item a {
-      display: flex;
-      align-items: center;
-      padding: 0.9rem 1rem;
-      color: var(--text-dim);
-      text-decoration: none;
-      border-radius: 12px;
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-    .game-item a::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 4px;
-      background: var(--accent);
-      transform: scaleY(0);
-      transition: transform 0.3s;
-    }
-    .game-item a:hover {
-      background: rgba(0,255,170,0.1);
-      color: white;
-      padding-left: 1.4rem;
-    }
-    .game-item a:hover::before {
-      transform: scaleY(1);
-    }
-    .game-item a.active {
-      background: rgba(0,255,170,0.15);
-      color: var(--accent);
-      font-weight: bold;
-    }
+    #loading-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:2000;opacity:0;visibility:hidden;transition:all .6s}
+    #loading-screen.active{opacity:1;visibility:visible}
+    .loading-title{font-family:'Orbitron',sans-serif;font-size:4rem;background:linear-gradient(90deg,var(--accent),#00ffdd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;display:inline-block;overflow:hidden}
+    .loading-title::before{content:'unblocked.lol';position:absolute;top:0;left:-100%;width:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:shine 2s infinite}
 
-    /* Main Content */
-    .main {
-      margin-left: 280px;
-      padding: 3rem 2rem;
-      min-height: 100vh;
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    .header h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 4.5rem;
-      background: linear-gradient(90deg, var(--accent), #00ffdd);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-    }
-    .header p {
-      font-size: 1.3rem;
-      color: var(--text-dim);
-    }
+    @keyframes shine{0%{left:-100%}100%{left:100%}}
 
-    /* Game Grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .card {
-      background: var(--card);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(0,255,170,0.2);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
-      position: relative;
-      backdrop-filter: blur(10px);
-    }
-    .card:hover {
-      transform: translateY(-15px) scale(1.03);
-      border-color: var(--accent);
-      box-shadow: 0 25px 50px rgba(0,255,170,0.25);
-    }
-    .thumb {
-      height: 200px;
-      background: #000;
-      position: relative;
-      overflow: hidden;
-    }
-    .thumb iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      opacity: 0.25;
-      transition: opacity 0.4s;
-    }
-    .card:hover .thumb iframe { opacity: 0.4; }
-    .info {
-      padding: 1.5rem;
-    }
-    .title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      color: var(--accent);
-    }
-    .play-btn {
-      display: block;
-      margin: 1rem auto 0;
-      padding: 12px 30px;
-      background: var(--accent);
-      color: #000;
-      font-weight: bold;
-      text-align: center;
-      border-radius: 50px;
-      text-decoration: none;
-      width: fit-content;
-      box-shadow: 0 0 20px rgba(0,255,170,0.6);
-      transition: all 0.3s;
-    }
-    .play-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 30px rgba(0,255,170,0.9);
-    }
+    #game-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.97);z-index:1500;display:none;align-items:center;justify-content:center;padding:20px}
+    #game-modal.active{display:flex}
+    .modal-content{position:relative;width:100%;height:100%;max-width:1400px;max-height:900px;background:#000;border:3px solid var(--accent);border-radius:12px;overflow:hidden;box-shadow:0 0 100px rgba(0,255,170,0.6)}
+    #game-frame{width:100%;height:100%;border:none}
+    .modal-controls{position:absolute;top:15px;right:15px;z-index:10;display:flex;gap:12px}
+    .modal-btn{background:var(--accent);color:#000;padding:12px 18px;border-radius:8px;font-weight:bold;cursor:pointer;transition:all .3s}
+    .modal-btn:hover{transform:scale(1.1)}
+    .close-btn{background:#ff4444;color:white}
+    .close-btn:hover{background:#ff6666}
 
-    /* Mobile */
-    @media (max-width: 900px) {
-      .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.4s;
-      }
-      .sidebar.open { transform: translateX(0); }
-      .main { margin-left: 0; }
-      .menu-toggle {
-        position: fixed;
-        top: 20px; left: 20px;
-        z-index: 200;
-        background: var(--accent);
-        color: #000;
-        padding: 12px 16px;
-        border-radius: 50%;
-        font-size: 1.5rem;
-        cursor: pointer;
-        box-shadow: 0 0 20px rgba(0,255,170,0.6);
-      }
+    @media (max-width:900px){
+      .header h1{font-size:3.5rem}
+      .grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
+      .modal-content{border-radius:0;border-width:2px}
     }
   </style>
 </head>
 <body>
 
-  <div class="menu-toggle">☰</div>
+  <div class="sidebar-toggle" id="sidebarToggle">Menu</div>
 
   <nav class="sidebar" id="sidebar">
-    <div class="logo">unblocked.lol</div>
-    <input type="text" class="search-box" placeholder="🔍 Search games..." id="search">
-    <div class="nav-title">All Games</div>
-    <ul class="game-list" id="gameList"></ul>
+    <div class="sidebar-content">
+      <div class="logo">unblocked.lol</div>
+      <input type="text" class="search-box" placeholder="Search games..." id="search">
+      <ul class="game-list" id="gameList"></ul>
+    </div>
   </nav>
 
   <main class="main">
     <header class="header">
       <h1>unblocked.lol</h1>
-      <p>Online Since 1/1/25!</p>
+      <p>78+ premium unblocked games with epic thumbnails</p>
     </header>
-
     <div class="grid" id="grid"></div>
   </main>
 
+  <div id="loading-screen">
+    <div class="loading-title">unblocked.lol</div>
+  </div>
+
+  <div id="game-modal">
+    <div class="modal-content">
+      <div class="modal-controls">
+        <button class="modal-btn" id="fullscreenBtn">Fullscreen</button>
+        <button class="modal-btn close-btn" id="closeBtn">Close</button>
+      </div>
+      <iframe id="game-frame" allowfullscreen></iframe>
+    </div>
+  </div>
+
 <script>
-  const grid = document.getElementById('grid');
-  const gameListEl = document.getElementById('gameList');
-  const searchInput = document.getElementById('search');
-  let allGames = [];
+// Game data with thumbnails
+const games = [
+  {file:"1v1.LoL.html", name:"1v1.LoL", img:"https://tse1.mm.bing.net/th/id/OIP.jv6iR5gwlta2uwmJ-zoJmgHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"},
+  {file:"2048 Merge Run.html", name:"2048 Merge Run", img:"https://th.bing.com/th/id/OIP.6fTgpyMudOUZtAeJRQ9GEwAAAA?w=147&h=158&c=7&r=0&o=7"},
+  {file:"Adventure Capatalist.html", name:"Adventure Capitalist", img:"https://th.bing.com/th/id/OIP.cn1P453UfDub7AaFBRoO0gHaHa?w=181&h=182&c=7&r=0&o=7"},
+  {file:"Basket Random.html", name:"Basket Random", img:"https://th.bing.com/th/id/R.3279f70eec52d7b6c1a4e72021fe9b49?rik=U6kdaNpz86dnyw&pid=ImgRaw&r=0"},
+  {file:"Boxing Random.html", name:"Boxing Random", img:"https://tse2.mm.bing.net/th/id/OIP.Rt480d2t4SEiajoVvPNxAwAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"},
+  {file:"Dadish 2.html", name:"Dadish 2", img:"https://th.bing.com/th/id/OIP.4zoJ1qn3b0m4BMN4WDqXpwHaHa?w=178&h=180&c=7&r=0&o=7"},
+  {file:"Dadish 3.html", name:"Dadish 3", img:"https://th.bing.com/th/id/OIP.qDULYJ66o1pvZ_X2W3PqXwHaHa?w=159&h=180&c=7&r=0&o=7"},
+  {file:"Dadish.html", name:"Dadish", img:"https://th.bing.com/th/id/OIP.dRhGIzN8Wnu1sQKYlyjoygHaHa?w=180&h=180&c=7&r=0&o=7"},
+  {file:"Daily Dadish.html", name:"Daily Dadish", img:"https://th.bing.com/th/id/OIP.gX7YJ_JbsmnyTMy_ONrHxwHaHa?w=156&h=180&c=7&r=0&o=7"},
+  {file:"Death Run 3D.html", name:"Death Run 3D", img:"https://play-lh.googleusercontent.com/dEu4Lrs5Ke5ZHDMedRkjjtYq1G22gGccxeIU_ZJNqqwLeSYshuUxBU0KCrSG7lEEwBo"},
+  {file:"Dig Deep.html", name:"Dig Deep", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/32.png"},
+  {file:"Doge Miner.html", name:"Doge Miner", img:"https://th.bing.com/th/id/OIP.8qiNzyPViFpETptqypnL4AHaHa?w=167&h=180&c=7&r=0&o=7"},
+  {file:"Escape Road.html", name:"Escape Road", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/264.png"},
+  {file:"Flip Master.html", name:"Flip Master", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/392.png"},
+  {file:"Getting Over It with Bennett Foddy.html", name:"Getting Over It", img:"https://th.bing.com/th/id/OIP.DoF8lVpkK92j9OnNye__rQHaEK?w=313&h=180&c=7&r=0&o=7"},
+  {file:"MonkeyMart.html", name:"Monkey Mart", img:"https://th.bing.com/th/id/OIP.GmKIjCrlse8QXE9EB8175gHaHa?w=180&h=180&c=7&r=0&o=7"},
+  {file:"Ragdoll Archers.html", name:"Ragdoll Archers", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/186.png"},
+  {file:"Retro Bowl.html", name:"Retro Bowl", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/33.png"},
+  {file:"RetroBowlCollege.html", name:"Retro Bowl College", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/34.png"},
+  {file:"Slope 2.html", name:"Slope 2", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/368.png"},
+  {file:"Twerk Race 3D.html", name:"Twerk Race 3D", img:"https://th.bing.com/th/id/OIP.tAYNPAIEKwy5Eb_3qw-ckQHaHa?w=187&h=187&c=7&r=0&o=7"},
+  {file:"Wordle.html", name:"Wordle", img:"https://th.bing.com/th/id/OIP.NhkcU9EZ3tvwdVo6db0bgAHaHa?w=173&h=180&c=7&r=0&o=7"},
+  {file:"coreball.html", name:"Core Ball", img:"https://th.bing.com/th/id/OIP.pSaFRh5UZ-PZi9oqxGDZfgHaFj?w=213&h=180&c=7&r=0&o=7"},
+  {file:"crazycars.html", name:"Crazy Cars", img:"https://th.bing.com/th/id/OIP.9Y7-6QtaVAYoyrFFjzUbIgHaHa?w=179&h=180&c=7&r=0&o=7"},
+  {file:"snowrider.html", name:"Snow Rider 3D", img:"https://th.bing.com/th/id/OIP.HEucI3p7n0YYCVzhNm_VxgAAAA?w=152&h=180&c=7&r=0&o=7"},
+  {file:"madden64.html", name:"Madden 64", img:"https://tse3.mm.bing.net/th/id/OIP.5zkP8SuHwTsaqw902v9MMgHaFI?w=264&h=182&c=7&r=0&o=7"},
+  {file:"trafficjam3d.html", name:"Traffic Jam 3D", img:"https://th.bing.com/th/id/OIP.B4Z_VL6Af0CDW_fsd6XEJQHaDt?w=327&h=174&c=7&r=0&o=7"},
+  {file:"shrek2.html", name:"Shrek 2", img:"https://tse2.mm.bing.net/th/id/OIP.7QbssIaRBRko9p_g6GPaKQHaHa?w=166&h=180&c=7&r=0&o=7"},
+  {file:"Growden.io.html", name:"Growden.io", img:"https://tse3.mm.bing.net/th/id/OIP.YPqwQpuLpH9jWJLIHyFPigHaEK?rs=1&pid=ImgDetMain&o=7&rm=3"},
+  {file:"99Nights.html", name:"99 Nights In A Forest", img:"https://th.bing.com/th/id/OIP.A75lKs2UsoiL7GAEofMIAwHaEK?w=309&h=180&c=7&r=0&o=7"},
+  {file:"capybaraclicker.html", name:"Capybara Clicker", img:"https://th.bing.com/th/id/OIP._yNwNBn69lZ6ZRdEB6BPIAHaD4?w=312&h=200&c=12&rs=1&o=6&pid=23.1"},
+  {file:"GrannyOnline.html", name:"Granny ONLINE", img:"https://th.bing.com/th/id/OIP.GIeeOy3l0WRqKRsOQxOMeQHaD4?w=327&h=180&c=7&r=0&o=7"},
+  {file:"SubwayMiami.html", name:"Subway Surfers Miami", img:"https://th.bing.com/th/id/OIP.3R42Bb5kvmhye2v7dmprswHaEK?w=287&h=180&c=7&r=0&o=7"},
+  {file:"BankRobbery2.html", name:"Bank Robbery 2", img:"https://th.bing.com/th/id/OIP.mrcQ0lI2QeiWcvI-KKajWgHaHa?w=172&h=180&c=7&r=0&o=7"},
+  {file:"PeoplePlayground.html", name:"People Playground", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/194.png"},
+  {file:"Tomb.html", name:"Tomb Of The Mask", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/109.png"},
+  {file:"BrawlGuys.io.html", name:"Brawl Guys.io", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/121.png"},
+  {file:"Kindergarten.html", name:"Kindergarten 1", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/445.png"},
+  {file:"Kindergarten2.html", name:"Kindergarten 2", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/446.png"},
+  {file:"EXE.html", name:"Sonic.Exe", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/606.png"},
+  {file:"DuckLife.html", name:"Duck Life", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/234.png"},
+  {file:"clbaseballbros.html", name:"BaseBall Bros", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/547.png"},
+  {file:"FootballBros.html", name:"Football Bros", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/548.png"},
+  {file:"cldrivemady.html", name:"Drive Mad", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/35.png"},
+  {file:"Cookie Clicker.html", name:"Cookie Clicker", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/82.png"},
+  {file:"Cluster Rush.html", name:"Cluster Rush", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/81.png"},
+  {file:"Hypper Sandbox.html", name:"Hypper Sandbox", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/551.png"},
+  {file:"clinfinitecraft.html", name:"Infinite Craft", img:"https://i.imgur.com/o2BTJsW.png"},
+  {file:"clfnafhalloween423.html", name:"Halloween Fnaf 4", img:"https://i.imgur.com/9qfpGPz.jpeg"},
+  {file:"skib.html", name:"Skibidi.io", img:"https://i.imgur.com/hitsfyx.jpeg"},
+  {file:"pvz2.html", name:"Plants Vs Zombies", img:"https://i.imgur.com/Yv0chjN.jpeg"},
+  {file:"gladi.html", name:"Gladiator Hopper", img:"https://i.imgur.com/cGGj5sG.jpeg"},
+  {file:"DriftBoss.html", name:"Drift Boss", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/276.png"},
+  {file:"BitLife.html", name:"BitLife", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/70.png"},
+  {file:"Volley.html", name:"Volley Random", img:"https://tse4.mm.bing.net/th/id/OIP.eID00s9ca6mbToB_jYrj4QHaE8?rs=1&pid=ImgDetMain&o=7&rm=3"},
+  {file:"CubeField.html", name:"Cube Field", img:"https://i.imgur.com/RP30Guh.png"},
+  {file:"Minecraft.html", name:"Minecraft 1.12.2", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/182.png"},
+  {file:"Buckshot.html", name:"Buckshot Roulette", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/205.png"},
+  {file:"Ragdoll Hit.html", name:"Ragdoll Hit", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/44.png"},
+  {file:"Bob The Robber 2.html", name:"Bob The Robber 2", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/76.png"},
+  {file:"Jetpack Joyride.html", name:"Jetpack Joyride", img:"https://cdn.jsdelivr.net/gh/gn-math/covers@main/7.png"},
+  {file:"Gold.html", name:"Pokemon Gold", img:"https://i.imgur.com/D5TLEMS_d.webp?maxwidth=760&fidelity=grand"}
+];
 
-  // Auto-fetch every .html file in /games/
-  fetch('games/')
-    .then(r => r.text())
-    .then(text => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, 'text/html');
-      const links = [...doc.querySelectorAll('a')]
-        .map(a => a.getAttribute('href'))
-        .filter(h => h.endsWith('.html') && !h.includes('index'))
-        .sort();
+const grid = document.getElementById('grid');
+const gameListEl = document.getElementById('gameList');
+const searchInput = document.getElementById('search');
+const loadingScreen = document.getElementById('loading-screen');
+const gameModal = document.getElementById('game-modal');
+const gameFrame = document.getElementById('game-frame');
 
-      allGames = links.map(file => ({
-        file,
-        name: file.replace('.html','').replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase())
-      }));
+function render(filter = '') {
+  const filtered = games.filter(g => g.name.toLowerCase().includes(filter.toLowerCase()));
 
-      renderEverything();
-    });
+  gameListEl.innerHTML = filtered.map(g => 
+    `<li class="game-item"><a onclick="launchGame('games/${g.file}')">${g.name}</a></li>`
+  ).join('');
 
-  function renderEverything(filter = '') {
-    const filtered = allGames.filter(g => g.name.toLowerCase().includes(filter.toLowerCase()));
+  grid.innerHTML = filtered.map(g => `
+    <div class="card" onclick="launchGame('games/${g.file}')">
+      <div class="thumb"><img src="${g.img}" alt="${g.name}"></div>
+      <div class="info">
+        <div class="title">${g.name}</div>
+        <div class="play-btn">PLAY NOW</div>
+      </div>
+    </div>
+  `).join('');
+}
 
-    // Sidebar list
-    gameListEl.innerHTML = filtered.map(g => `
-      <li class="game-item">
-        <a href="games/${g.file}" target="gameFrame">${g.name}</a>
-      </li>
-    `).join('');
+function launchGame(url) {
+  loadingScreen.classList.add('active');
+  setTimeout(() => {
+    loadingScreen.classList.remove('active');
+    gameFrame.src = url;
+    gameModal.classList.add('active');
+  }, 2200);
+}
 
-    // Grid cards
-    grid.innerHTML = filtered.map(g => `
-      <a href="games/${g.file}" target="_blank" class="card">
-        <div class="thumb">
-          <iframe src="games/${g.file}" loading="lazy"></iframe>
-        </div>
-        <div class="info">
-          <div class="title">${g.name}</div>
-          <div class="play-btn">PLAY NOW</div>
-        </div>
-      </a>
-    `).join('');
-  }
+searchInput.addEventListener('input', e => render(e.target.value));
+document.getElementById('sidebarToggle').addEventListener('click', () => 
+  document.getElementById('sidebar').classList.toggle('open')
+);
+document.getElementById('closeBtn').addEventListener('click', () => {
+  gameModal.classList.remove('active');
+  gameFrame.src = '';
+});
+document.getElementById('fullscreenBtn').addEventListener('click', () => {
+  document.querySelector('.modal-content').requestFullscreen();
+});
+document.addEventListener('keydown', e => e.key === 'Escape' && gameModal.classList.remove('active'));
 
-  searchInput.addEventListener('input', e => renderEverything(e.target.value));
-
-  // Mobile menu toggle
-  document.querySelector('.menu-toggle').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
-  });
+render();
 </script>
 </body>
 </html>
